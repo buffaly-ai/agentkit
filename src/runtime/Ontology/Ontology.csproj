@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>Ontology.Runtime</PackageId>
+    <AssemblyName>Ontology</AssemblyName>
+    <RootNamespace>Ontology</RootNamespace>
+    <Description>Frozen Ontology runtime assembly for Buffaly Agent Kit 1.0.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BasicUtilities">
+      <HintPath>..\foundation\lib\BasicUtilities.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+</Project>

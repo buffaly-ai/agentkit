@@ -1,0 +1,22 @@
+# Build outputs
+bin/
+obj/
+[Bb]in/
+[Oo]bj/
+.vs/
+
+# User/editor files
+*.user
+*.suo
+*.rsuser
+
+# Generated validation logs/reports
+artifacts/validation/
+
+# Temporary source archive staging folders
+artifacts/dist/staging-*/
+
+# Local logs
+*.log
+debug_*.log
+

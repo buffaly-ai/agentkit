@@ -1,0 +1,16 @@
+{
+  "generatedUtc": "2026-07-13T14:37:27.4625087Z",
+  "archive": "buffaly-agentkit-1.0.0-source-20260713T143726Z.zip",
+  "bytes": 366698,
+  "sha256": "D37D13FD212222CC5642407B62F878BD728EDF6B51C3023FD3303A7C8784877E",
+  "fileCount": 299,
+  "exclusions": [
+    "any bin directory",
+    "any obj directory",
+    ".git",
+    ".vs",
+    "artifacts/packages",
+    "artifacts/validation",
+    "artifacts/dist"
+  ]
+}

@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>ProtoScript.Parsers</AssemblyName>
+    <RootNamespace>ProtoScript.Parsers</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ProtoScript\ProtoScript.csproj" />
+    <Reference Include="BasicUtilities">
+      <HintPath>..\foundation\lib\BasicUtilities.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+</Project>

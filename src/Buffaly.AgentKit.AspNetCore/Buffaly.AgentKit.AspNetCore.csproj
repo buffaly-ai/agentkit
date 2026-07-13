@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <PackageId>Buffaly.AgentKit.AspNetCore</PackageId>
+    <Description>ASP.NET Core hosting and inspector extensions for Buffaly Agent Kit.</Description>
+    <OutputType>Library</OutputType>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Buffaly.AgentKit\Buffaly.AgentKit.csproj" />
+    <ProjectReference Include="..\Buffaly.AgentKit.ProtoScript\Buffaly.AgentKit.ProtoScript.csproj" />
+  </ItemGroup>
+</Project>

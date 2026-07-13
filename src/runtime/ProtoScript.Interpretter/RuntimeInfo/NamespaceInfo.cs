@@ -1,0 +1,3 @@
+﻿namespace ProtoScript.Interpretter.RuntimeInfo
+{
+}

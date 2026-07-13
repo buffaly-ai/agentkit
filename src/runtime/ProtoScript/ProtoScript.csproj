@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>ProtoScript.Runtime</PackageId>
+    <AssemblyName>ProtoScript</AssemblyName>
+    <RootNamespace>ProtoScript</RootNamespace>
+    <Description>Frozen ProtoScript runtime assembly for Buffaly Agent Kit 1.0.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ontology\Ontology.csproj" />
+  </ItemGroup>
+</Project>

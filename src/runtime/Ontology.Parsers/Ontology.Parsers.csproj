@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Ontology.Parsers</AssemblyName>
+    <RootNamespace>Ontology.Parsers</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ontology\Ontology.csproj" />
+    <Reference Include="BasicUtilities">
+      <HintPath>..\foundation\lib\BasicUtilities.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+</Project>

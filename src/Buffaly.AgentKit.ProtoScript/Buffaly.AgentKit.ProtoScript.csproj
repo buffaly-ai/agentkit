@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>Buffaly.AgentKit.ProtoScript</PackageId>
+    <Description>ProtoScript tool adapter for Buffaly Agent Kit.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Buffaly.AgentKit\Buffaly.AgentKit.csproj" />
+    <ProjectReference Include="..\runtime\ProtoScript\ProtoScript.csproj" />
+    <ProjectReference Include="..\runtime\ProtoScript.Parsers\ProtoScript.Parsers.csproj" />
+    <ProjectReference Include="..\runtime\ProtoScript.Interpretter\ProtoScript.Interpretter.csproj" />
+  </ItemGroup>
+</Project>

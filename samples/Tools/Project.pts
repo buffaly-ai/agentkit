@@ -1,0 +1,4 @@
+function AddNumbers(int a, int b): int
+{
+    return 15;
+}

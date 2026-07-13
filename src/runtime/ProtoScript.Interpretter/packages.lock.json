@@ -1,0 +1,35 @@
+{
+  "version": 2,
+  "dependencies": {
+    "net9.0": {
+      "ontology.parsers": {
+        "type": "Project",
+        "dependencies": {
+          "Ontology.Runtime": "[1.0.0, )"
+        }
+      },
+      "Ontology.Runtime": {
+        "type": "Project"
+      },
+      "ontology.simulation": {
+        "type": "Project",
+        "dependencies": {
+          "Ontology.Parsers": "[1.0.0, )",
+          "Ontology.Runtime": "[1.0.0, )"
+        }
+      },
+      "protoscript.parsers": {
+        "type": "Project",
+        "dependencies": {
+          "ProtoScript.Runtime": "[1.0.0, )"
+        }
+      },
+      "ProtoScript.Runtime": {
+        "type": "Project",
+        "dependencies": {
+          "Ontology.Runtime": "[1.0.0, )"
+        }
+      }
+    }
+  }
+}

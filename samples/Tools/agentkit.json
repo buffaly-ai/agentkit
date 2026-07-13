@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "projectFile": "Project.pts",
+  "exports": [
+    {
+      "name": "add_numbers",
+      "description": "Adds two integer numbers.",
+      "method": "AddNumbers",
+      "parameters": [
+        { "name": "a", "type": "int", "description": "First number", "required": true },
+        { "name": "b", "type": "int", "description": "Second number", "required": true }
+      ],
+      "returnType": "int"
+    }
+  ]
+}

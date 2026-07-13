@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>Buffaly.Foundation.Runtime</PackageId>
+    <Description>Frozen foundation runtime dependency package for Buffaly Agent Kit 1.0.</Description>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <NoWarn>$(NoWarn);NU5100</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="lib\BasicUtilities.dll" Pack="true" PackagePath="lib\$(TargetFramework)\BasicUtilities.dll" />
+  </ItemGroup>
+</Project>

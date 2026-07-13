@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>ProtoScript.Interpretter</AssemblyName>
+    <RootNamespace>ProtoScript.Interpretter</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ProtoScript\ProtoScript.csproj" />
+    <ProjectReference Include="..\ProtoScript.Parsers\ProtoScript.Parsers.csproj" />
+    <ProjectReference Include="..\Ontology\Ontology.csproj" />
+    <ProjectReference Include="..\Ontology.Parsers\Ontology.Parsers.csproj" />
+    <ProjectReference Include="..\Ontology.Simulation\Ontology.Simulation.csproj" />
+    <Reference Include="BasicUtilities">
+      <HintPath>..\foundation\lib\BasicUtilities.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+</Project>
