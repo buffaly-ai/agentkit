@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "projectFile": "IncidentRules.pts",
+  "exports": [{
+    "name": "classify_incident_evidence",
+    "prototype": "ClassifyIncidentEvidence",
+    "method": "Execute",
+    "description": "Classify incident evidence without claiming causality.",
+    "parameters": [
+      { "name": "errorRateTenthsPercent", "type": "int", "required": true },
+      { "name": "p95LatencyMs", "type": "int", "required": true },
+      { "name": "databasePoolUtilizationPercent", "type": "int", "required": true },
+      { "name": "minutesSinceDeployment", "type": "int", "required": true }
+    ],
+    "returnType": "string"
+  }]
+}
+

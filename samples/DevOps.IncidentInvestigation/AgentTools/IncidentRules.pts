@@ -1,0 +1,8 @@
+prototype ClassifyIncidentEvidence
+{
+    function Execute(int errorRateTenthsPercent, int p95LatencyMs, int databasePoolUtilizationPercent, int minutesSinceDeployment): string
+    {
+        return "{\"severity\":\"high\",\"signals\":[\"latency_threshold_exceeded\",\"database_pool_saturation\",\"recent_deployment_correlation\"],\"classification\":\"resource_saturation_with_recent_change\"}";
+    }
+}
+

@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net9.0</TargetFramework><IsPackable>false</IsPackable></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Buffaly.AgentKit\Buffaly.AgentKit.csproj" />
+    <ProjectReference Include="..\..\src\Buffaly.AgentKit.ProtoScript\Buffaly.AgentKit.ProtoScript.csproj" />
+    <ProjectReference Include="..\Buffaly.AgentKit.SampleSupport\Buffaly.AgentKit.SampleSupport.csproj" />
+  </ItemGroup>
+  <ItemGroup><None Include="AgentTools\**\*" CopyToOutputDirectory="PreserveNewest" /><None Include="Data\**\*" CopyToOutputDirectory="PreserveNewest" /></ItemGroup>
+</Project>

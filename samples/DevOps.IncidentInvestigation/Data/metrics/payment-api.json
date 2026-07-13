@@ -1,0 +1,4 @@
+{ "SyntheticData": true, "serviceName": "payment-api", "metricName": "latency_and_pool", "points": [
+  { "utc": "2026-01-15T14:00:00Z", "p95LatencyMs": 180, "errorRatePercent": 0.1, "databasePoolUtilizationPercent": 35 },
+  { "utc": "2026-01-15T14:10:00Z", "p95LatencyMs": 175, "errorRatePercent": 0.1, "databasePoolUtilizationPercent": 36 }
+] }

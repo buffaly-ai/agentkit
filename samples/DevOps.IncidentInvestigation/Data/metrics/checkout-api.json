@@ -1,0 +1,5 @@
+{ "SyntheticData": true, "serviceName": "checkout-api", "metricName": "latency_and_pool", "points": [
+  { "utc": "2026-01-15T14:00:00Z", "p95LatencyMs": 240, "errorRatePercent": 0.2, "databasePoolUtilizationPercent": 52 },
+  { "utc": "2026-01-15T14:05:00Z", "p95LatencyMs": 820, "errorRatePercent": 1.4, "databasePoolUtilizationPercent": 78 },
+  { "utc": "2026-01-15T14:10:00Z", "p95LatencyMs": 1850, "errorRatePercent": 4.8, "databasePoolUtilizationPercent": 94 }
+] }

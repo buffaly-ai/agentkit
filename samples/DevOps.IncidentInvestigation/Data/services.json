@@ -1,0 +1,4 @@
+[
+  { "SyntheticData": true, "serviceName": "checkout-api", "owner": "Example Checkout Team", "dependencies": ["orders-db", "payment-api"], "status": "degraded" },
+  { "SyntheticData": true, "serviceName": "payment-api", "owner": "Example Payments Team", "dependencies": [], "status": "normal" }
+]
