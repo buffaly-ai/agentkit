@@ -41,6 +41,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buffaly.AgentKit.SampleSupp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevOps.IncidentInvestigation", "samples\DevOps.IncidentInvestigation\DevOps.IncidentInvestigation.csproj", "{E99EC141-2C07-490D-BF9A-389BF0A9E986}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medical.ReferralReadiness", "samples\Medical.ReferralReadiness\Medical.ReferralReadiness.csproj", "{4D824D63-30A3-4625-8A1B-3CA28E1A06F3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -231,6 +233,18 @@ Global
 		{E99EC141-2C07-490D-BF9A-389BF0A9E986}.Release|x64.Build.0 = Release|Any CPU
 		{E99EC141-2C07-490D-BF9A-389BF0A9E986}.Release|x86.ActiveCfg = Release|Any CPU
 		{E99EC141-2C07-490D-BF9A-389BF0A9E986}.Release|x86.Build.0 = Release|Any CPU
+		{4D824D63-30A3-4625-8A1B-3CA28E1A06F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D824D63-30A3-4625-8A1B-3CA28E1A06F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D824D63-30A3-4625-8A1B-3CA28E1A06F3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4D824D63-30A3-4625-8A1B-3CA28E1A06F3}.Debug|x64.Build.0 = Debug|Any CPU
+		{4D824D63-30A3-4625-8A1B-3CA28E1A06F3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4D824D63-30A3-4625-8A1B-3CA28E1A06F3}.Debug|x86.Build.0 = Debug|Any CPU
+		{4D824D63-30A3-4625-8A1B-3CA28E1A06F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D824D63-30A3-4625-8A1B-3CA28E1A06F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D824D63-30A3-4625-8A1B-3CA28E1A06F3}.Release|x64.ActiveCfg = Release|Any CPU
+		{4D824D63-30A3-4625-8A1B-3CA28E1A06F3}.Release|x64.Build.0 = Release|Any CPU
+		{4D824D63-30A3-4625-8A1B-3CA28E1A06F3}.Release|x86.ActiveCfg = Release|Any CPU
+		{4D824D63-30A3-4625-8A1B-3CA28E1A06F3}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -253,5 +267,6 @@ Global
 		{9334AA40-55F7-459B-80CE-7A62BEBBFE67} = {A86C6CF5-943B-F66C-7DBE-6DEBDB6F788B}
 		{88BEB256-27A5-4C7E-828B-50DE078B8AF5} = {5D20AA90-6969-D8BD-9DCD-8634F4692FDA}
 		{E99EC141-2C07-490D-BF9A-389BF0A9E986} = {5D20AA90-6969-D8BD-9DCD-8634F4692FDA}
+		{4D824D63-30A3-4625-8A1B-3CA28E1A06F3} = {5D20AA90-6969-D8BD-9DCD-8634F4692FDA}
 	EndGlobalSection
 EndGlobal

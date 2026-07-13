@@ -1,0 +1,6 @@
+[
+  { "SyntheticData": true, "PatientId": "SYN-PAT-001", "DisplayName": "Synthetic Patient One" },
+  { "SyntheticData": true, "PatientId": "SYN-PAT-002", "DisplayName": "Synthetic Patient Two" },
+  { "SyntheticData": true, "PatientId": "SYN-PAT-003", "DisplayName": "Synthetic Patient Three" },
+  { "SyntheticData": true, "PatientId": "SYN-PAT-004", "DisplayName": "Synthetic Patient Four" }
+]

@@ -1,0 +1,6 @@
+[
+  { "SyntheticData": true, "OfficeId": "OFFICE-01", "DisplayName": "Synthetic Therapy Office", "ContactMethod": "portal message", "HasProviderContact": true },
+  { "SyntheticData": true, "OfficeId": "OFFICE-02", "DisplayName": "Synthetic Specialty Office", "ContactMethod": "portal message", "HasProviderContact": true },
+  { "SyntheticData": true, "OfficeId": "OFFICE-03", "DisplayName": "Synthetic Ortho Office", "ContactMethod": "portal message", "HasProviderContact": true },
+  { "SyntheticData": true, "OfficeId": "OFFICE-04", "DisplayName": "Synthetic Imaging Office", "ContactMethod": "not on file", "HasProviderContact": false }
+]

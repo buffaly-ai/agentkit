@@ -1,0 +1,7 @@
+prototype AssessReferralReadiness
+{
+    function Execute(string serviceLine, bool hasSignedOrder, bool hasInsuranceAuthorization, bool hasClinicalSummary, bool hasRelevantImaging): string
+    {
+        return "{\"status\":\"needs_information\",\"missingItems\":[\"signed referral order\",\"relevant imaging report\"],\"administrativeOnly\":true}";
+    }
+}

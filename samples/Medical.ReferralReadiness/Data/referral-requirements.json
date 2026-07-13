@@ -1,0 +1,6 @@
+[
+  { "SyntheticData": true, "ServiceLine": "Physical therapy", "RequiresSignedOrder": true, "RequiresInsuranceAuthorization": true, "RequiresClinicalSummary": true, "RequiresRelevantImaging": false },
+  { "SyntheticData": true, "ServiceLine": "Specialty consultation", "RequiresSignedOrder": true, "RequiresInsuranceAuthorization": true, "RequiresClinicalSummary": true, "RequiresRelevantImaging": false },
+  { "SyntheticData": true, "ServiceLine": "Orthopedic consultation", "RequiresSignedOrder": true, "RequiresInsuranceAuthorization": true, "RequiresClinicalSummary": true, "RequiresRelevantImaging": true },
+  { "SyntheticData": true, "ServiceLine": "Diagnostic imaging", "RequiresSignedOrder": true, "RequiresInsuranceAuthorization": true, "RequiresClinicalSummary": true, "RequiresRelevantImaging": true }
+]

@@ -1,0 +1,6 @@
+[
+  { "SyntheticData": true, "ReferralId": "REF-1001", "ServiceLine": "Physical therapy", "HasSignedOrder": true, "HasInsuranceAuthorization": true, "HasClinicalSummary": true, "HasRelevantImaging": true, "ReferringOfficeId": "OFFICE-01" },
+  { "SyntheticData": true, "ReferralId": "REF-1002", "ServiceLine": "Specialty consultation", "HasSignedOrder": true, "HasInsuranceAuthorization": false, "HasClinicalSummary": true, "HasRelevantImaging": true, "ReferringOfficeId": "OFFICE-02" },
+  { "SyntheticData": true, "ReferralId": "REF-1003", "ServiceLine": "Orthopedic consultation", "HasSignedOrder": false, "HasInsuranceAuthorization": true, "HasClinicalSummary": true, "HasRelevantImaging": false, "ReferringOfficeId": "OFFICE-03" },
+  { "SyntheticData": true, "ReferralId": "REF-1004", "ServiceLine": "Diagnostic imaging", "HasSignedOrder": true, "HasInsuranceAuthorization": true, "HasClinicalSummary": true, "HasRelevantImaging": true, "ReferringOfficeId": "OFFICE-04" }
+]
