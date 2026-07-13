@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><TargetFramework>net9.0</TargetFramework><IsPackable>false</IsPackable></PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\samples\Buffaly.AgentKit.SampleSupport\Buffaly.AgentKit.SampleSupport.csproj" />
+    <ProjectReference Include="..\..\samples\DevOps.IncidentInvestigation\DevOps.IncidentInvestigation.csproj" />
+    <ProjectReference Include="..\..\samples\Medical.ReferralReadiness\Medical.ReferralReadiness.csproj" />
+    <ProjectReference Include="..\..\samples\Commerce.ReturnResolution\Commerce.ReturnResolution.csproj" />
+  </ItemGroup>
+</Project>

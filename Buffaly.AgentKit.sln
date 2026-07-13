@@ -45,6 +45,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medical.ReferralReadiness",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commerce.ReturnResolution", "samples\Commerce.ReturnResolution\Commerce.ReturnResolution.csproj", "{DAC8750A-B380-4A49-BB0D-2B98B2D15DAD}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buffaly.AgentKit.SampleTests", "tests\Buffaly.AgentKit.SampleTests\Buffaly.AgentKit.SampleTests.csproj", "{A8B9D121-178E-4864-BB00-0D2DD2A584ED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -259,6 +263,18 @@ Global
 		{DAC8750A-B380-4A49-BB0D-2B98B2D15DAD}.Release|x64.Build.0 = Release|Any CPU
 		{DAC8750A-B380-4A49-BB0D-2B98B2D15DAD}.Release|x86.ActiveCfg = Release|Any CPU
 		{DAC8750A-B380-4A49-BB0D-2B98B2D15DAD}.Release|x86.Build.0 = Release|Any CPU
+		{A8B9D121-178E-4864-BB00-0D2DD2A584ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8B9D121-178E-4864-BB00-0D2DD2A584ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8B9D121-178E-4864-BB00-0D2DD2A584ED}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A8B9D121-178E-4864-BB00-0D2DD2A584ED}.Debug|x64.Build.0 = Debug|Any CPU
+		{A8B9D121-178E-4864-BB00-0D2DD2A584ED}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A8B9D121-178E-4864-BB00-0D2DD2A584ED}.Debug|x86.Build.0 = Debug|Any CPU
+		{A8B9D121-178E-4864-BB00-0D2DD2A584ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8B9D121-178E-4864-BB00-0D2DD2A584ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8B9D121-178E-4864-BB00-0D2DD2A584ED}.Release|x64.ActiveCfg = Release|Any CPU
+		{A8B9D121-178E-4864-BB00-0D2DD2A584ED}.Release|x64.Build.0 = Release|Any CPU
+		{A8B9D121-178E-4864-BB00-0D2DD2A584ED}.Release|x86.ActiveCfg = Release|Any CPU
+		{A8B9D121-178E-4864-BB00-0D2DD2A584ED}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -283,5 +299,6 @@ Global
 		{E99EC141-2C07-490D-BF9A-389BF0A9E986} = {5D20AA90-6969-D8BD-9DCD-8634F4692FDA}
 		{4D824D63-30A3-4625-8A1B-3CA28E1A06F3} = {5D20AA90-6969-D8BD-9DCD-8634F4692FDA}
 		{DAC8750A-B380-4A49-BB0D-2B98B2D15DAD} = {5D20AA90-6969-D8BD-9DCD-8634F4692FDA}
+		{A8B9D121-178E-4864-BB00-0D2DD2A584ED} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 	EndGlobalSection
 EndGlobal
