@@ -43,6 +43,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevOps.IncidentInvestigatio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medical.ReferralReadiness", "samples\Medical.ReferralReadiness\Medical.ReferralReadiness.csproj", "{4D824D63-30A3-4625-8A1B-3CA28E1A06F3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commerce.ReturnResolution", "samples\Commerce.ReturnResolution\Commerce.ReturnResolution.csproj", "{DAC8750A-B380-4A49-BB0D-2B98B2D15DAD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -245,6 +247,18 @@ Global
 		{4D824D63-30A3-4625-8A1B-3CA28E1A06F3}.Release|x64.Build.0 = Release|Any CPU
 		{4D824D63-30A3-4625-8A1B-3CA28E1A06F3}.Release|x86.ActiveCfg = Release|Any CPU
 		{4D824D63-30A3-4625-8A1B-3CA28E1A06F3}.Release|x86.Build.0 = Release|Any CPU
+		{DAC8750A-B380-4A49-BB0D-2B98B2D15DAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAC8750A-B380-4A49-BB0D-2B98B2D15DAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAC8750A-B380-4A49-BB0D-2B98B2D15DAD}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DAC8750A-B380-4A49-BB0D-2B98B2D15DAD}.Debug|x64.Build.0 = Debug|Any CPU
+		{DAC8750A-B380-4A49-BB0D-2B98B2D15DAD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DAC8750A-B380-4A49-BB0D-2B98B2D15DAD}.Debug|x86.Build.0 = Debug|Any CPU
+		{DAC8750A-B380-4A49-BB0D-2B98B2D15DAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAC8750A-B380-4A49-BB0D-2B98B2D15DAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAC8750A-B380-4A49-BB0D-2B98B2D15DAD}.Release|x64.ActiveCfg = Release|Any CPU
+		{DAC8750A-B380-4A49-BB0D-2B98B2D15DAD}.Release|x64.Build.0 = Release|Any CPU
+		{DAC8750A-B380-4A49-BB0D-2B98B2D15DAD}.Release|x86.ActiveCfg = Release|Any CPU
+		{DAC8750A-B380-4A49-BB0D-2B98B2D15DAD}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -268,5 +282,6 @@ Global
 		{88BEB256-27A5-4C7E-828B-50DE078B8AF5} = {5D20AA90-6969-D8BD-9DCD-8634F4692FDA}
 		{E99EC141-2C07-490D-BF9A-389BF0A9E986} = {5D20AA90-6969-D8BD-9DCD-8634F4692FDA}
 		{4D824D63-30A3-4625-8A1B-3CA28E1A06F3} = {5D20AA90-6969-D8BD-9DCD-8634F4692FDA}
+		{DAC8750A-B380-4A49-BB0D-2B98B2D15DAD} = {5D20AA90-6969-D8BD-9DCD-8634F4692FDA}
 	EndGlobalSection
 EndGlobal

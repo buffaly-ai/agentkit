@@ -1,0 +1,15 @@
+prototype EvaluateReturnEligibility
+{
+    function Execute(int daysSinceDelivery, string reason, string itemCondition, bool isFinalSale): string
+    {
+        return "{\"status\":\"eligible\",\"refundShipping\":false,\"restockingPercent\":0,\"rule\":\"damaged_item_within_window\"}";
+    }
+}
+
+prototype CalculateRefundAmount
+{
+    function Execute(int merchandiseAmountCents, int shippingAmountCents, int restockingPercent, bool refundShipping): int
+    {
+        return merchandiseAmountCents;
+    }
+}

@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup><TargetFramework>net9.0</TargetFramework><IsPackable>false</IsPackable><Nullable>enable</Nullable></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Buffaly.AgentKit\Buffaly.AgentKit.csproj" />
+    <ProjectReference Include="..\..\src\Buffaly.AgentKit.ProtoScript\Buffaly.AgentKit.ProtoScript.csproj" />
+    <ProjectReference Include="..\..\src\Buffaly.AgentKit.AspNetCore\Buffaly.AgentKit.AspNetCore.csproj" />
+    <ProjectReference Include="..\Buffaly.AgentKit.SampleSupport\Buffaly.AgentKit.SampleSupport.csproj" />
+  </ItemGroup>
+  <ItemGroup><None Include="AgentTools\**\*" CopyToOutputDirectory="PreserveNewest" /><None Include="Data\**\*" CopyToOutputDirectory="PreserveNewest" /></ItemGroup>
+</Project>

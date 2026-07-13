@@ -1,0 +1,6 @@
+[
+  { "SyntheticData": true, "OrderId": "ORD-1041", "Message": "The item is unopened and I no longer need it." },
+  { "SyntheticData": true, "OrderId": "ORD-1042", "Message": "The item arrived damaged. Please help with a refund." },
+  { "SyntheticData": true, "OrderId": "ORD-1043", "Message": "I changed my mind on this final-sale item." },
+  { "SyntheticData": true, "OrderId": "ORD-1044", "Message": "Delivery was late and only part of the shipment arrived." }
+]

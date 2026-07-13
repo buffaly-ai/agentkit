@@ -1,0 +1,4 @@
+[
+  { "SyntheticData": true, "PolicyId": "STANDARD-30", "ReturnWindowDays": 30, "RestockingPercent": 0, "RefundShippingForDamage": false },
+  { "SyntheticData": true, "PolicyId": "FINAL-SALE", "ReturnWindowDays": 0, "RestockingPercent": 100, "RefundShippingForDamage": false }
+]

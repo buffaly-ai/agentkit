@@ -1,0 +1,6 @@
+[
+  { "SyntheticData": true, "CustomerId": "SYN-CUST-01", "DisplayName": "Synthetic Buyer One" },
+  { "SyntheticData": true, "CustomerId": "SYN-CUST-02", "DisplayName": "Synthetic Buyer Two" },
+  { "SyntheticData": true, "CustomerId": "SYN-CUST-03", "DisplayName": "Synthetic Buyer Three" },
+  { "SyntheticData": true, "CustomerId": "SYN-CUST-04", "DisplayName": "Synthetic Buyer Four" }
+]

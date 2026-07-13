@@ -1,0 +1,6 @@
+[
+  { "SyntheticData": true, "OrderId": "ORD-1041", "CustomerId": "SYN-CUST-01", "PolicyId": "STANDARD-30", "DaysSinceDelivery": 12, "Reason": "changed_mind", "ItemCondition": "unopened", "IsFinalSale": false, "MerchandiseAmount": 49.50, "ShippingAmount": 6.95 },
+  { "SyntheticData": true, "OrderId": "ORD-1042", "CustomerId": "SYN-CUST-02", "PolicyId": "STANDARD-30", "DaysSinceDelivery": 6, "Reason": "damaged", "ItemCondition": "damaged", "IsFinalSale": false, "MerchandiseAmount": 84.95, "ShippingAmount": 7.95 },
+  { "SyntheticData": true, "OrderId": "ORD-1043", "CustomerId": "SYN-CUST-03", "PolicyId": "FINAL-SALE", "DaysSinceDelivery": 4, "Reason": "changed_mind", "ItemCondition": "opened", "IsFinalSale": true, "MerchandiseAmount": 29.99, "ShippingAmount": 4.95 },
+  { "SyntheticData": true, "OrderId": "ORD-1044", "CustomerId": "SYN-CUST-04", "PolicyId": "STANDARD-30", "DaysSinceDelivery": 33, "Reason": "late_delivery", "ItemCondition": "partial", "IsFinalSale": false, "MerchandiseAmount": 120.00, "ShippingAmount": 9.95 }
+]
