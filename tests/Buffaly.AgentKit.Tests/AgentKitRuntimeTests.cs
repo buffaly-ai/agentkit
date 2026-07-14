@@ -141,4 +141,105 @@ public class AgentKitRuntimeTests
         await new AgentKitRuntime(new ScriptedChatClient(first, second), [tool], new AgentKitOptions { ToolTimeout = TimeSpan.FromMilliseconds(10) }).RunTurnAsync(conv, "slow");
         Assert.Contains("timed out", conv.Messages.Single(m => m.Role == AgentMessageRole.Tool).Content);
     }
+
+    [Fact]
+    public async Task SecondProviderRequestContainsAssistantFunctionCallAndMatchingResult()
+    {
+        var client = new ScriptedChatClient(
+            new ChatResponse(new ChatMessage(ChatRole.Assistant, [new FunctionCallContent("call-1", "add_numbers", new Dictionary<string, object?> { ["a"] = 2, ["b"] = 3 })])),
+            new ChatResponse(new ChatMessage(ChatRole.Assistant, "5")));
+        var tool = new DelegateAIFunction("add_numbers", "adds", (a, ct) => ValueTask.FromResult<object?>(5));
+
+        await new AgentKitRuntime(client, [tool]).RunTurnAsync(AgentConversation.Create(), "add");
+
+        IList<ChatMessage> request = client.Requests[1];
+        Assert.Equal([ChatRole.User, ChatRole.Assistant, ChatRole.Tool], request.Select(message => message.Role).ToArray());
+        FunctionCallContent retainedCall = Assert.Single(request[1].Contents.OfType<FunctionCallContent>());
+        FunctionResultContent retainedResult = Assert.Single(request[2].Contents.OfType<FunctionResultContent>());
+        Assert.Equal("call-1", retainedCall.CallId);
+        Assert.Equal("add_numbers", retainedCall.Name);
+        Assert.Equal("call-1", retainedResult.CallId);
+        Assert.Equal(5L, Convert.ToInt64(retainedResult.Result));
+    }
+
+    [Fact]
+    public async Task CombinedAssistantTextAndFunctionCallArePreserved()
+    {
+        var firstMessage = new ChatMessage(ChatRole.Assistant, [
+            new TextContent("I will calculate it."),
+            new FunctionCallContent("call-1", "add_numbers", new Dictionary<string, object?> { ["a"] = 2, ["b"] = 3 })]);
+        var client = new ScriptedChatClient(
+            new ChatResponse(firstMessage),
+            new ChatResponse(new ChatMessage(ChatRole.Assistant, "5")));
+        var tool = new DelegateAIFunction("add_numbers", "adds", (a, ct) => ValueTask.FromResult<object?>(5));
+        var conversation = AgentConversation.Create();
+
+        await new AgentKitRuntime(client, [tool]).RunTurnAsync(conversation, "add");
+
+        AgentMessage assistant = conversation.Messages.First(message => message.Role == AgentMessageRole.Assistant);
+        Assert.Collection(
+            assistant.Contents,
+            content => Assert.Equal("I will calculate it.", Assert.IsType<AgentTextContent>(content).Text),
+            content => Assert.Equal("call-1", Assert.IsType<AgentFunctionCallContent>(content).CallId));
+        Assert.Collection(
+            client.Requests[1][1].Contents,
+            content => Assert.Equal("I will calculate it.", Assert.IsType<TextContent>(content).Text),
+            content => Assert.Equal("call-1", Assert.IsType<FunctionCallContent>(content).CallId));
+    }
+
+    [Fact]
+    public async Task MultipleFunctionCallsPreserveOrderAndCallIds()
+    {
+        var client = new ScriptedChatClient(
+            new ChatResponse(new ChatMessage(ChatRole.Assistant, [
+                new FunctionCallContent("call-a", "echo", new Dictionary<string, object?> { ["value"] = "a" }),
+                new FunctionCallContent("call-b", "echo", new Dictionary<string, object?> { ["value"] = "b" })])),
+            new ChatResponse(new ChatMessage(ChatRole.Assistant, "done")));
+        var tool = new DelegateAIFunction("echo", "echo", (a, ct) => ValueTask.FromResult<object?>(a["value"]));
+
+        await new AgentKitRuntime(client, [tool]).RunTurnAsync(AgentConversation.Create(), "echo");
+
+        Assert.Equal(["call-a", "call-b"], client.Requests[1][1].Contents.OfType<FunctionCallContent>().Select(call => call.CallId).ToArray());
+        Assert.Equal(["call-a", "call-b"], client.Requests[1].Skip(2).SelectMany(message => message.Contents).OfType<FunctionResultContent>().Select(result => result.CallId).ToArray());
+    }
+
+    [Fact]
+    public async Task ConversationExportImportPreservesFunctionCallsAndResults()
+    {
+        var client = new ScriptedChatClient(
+            new ChatResponse(new ChatMessage(ChatRole.Assistant, [new FunctionCallContent("call-1", "add_numbers", new Dictionary<string, object?> { ["a"] = 2, ["b"] = 3 })])),
+            new ChatResponse(new ChatMessage(ChatRole.Assistant, "5")));
+        var tool = new DelegateAIFunction("add_numbers", "adds", (a, ct) => ValueTask.FromResult<object?>(5));
+        var conversation = AgentConversation.Create("typed-history");
+        await new AgentKitRuntime(client, [tool]).RunTurnAsync(conversation, "add");
+
+        AgentConversation imported = AgentConversation.ImportState(conversation.ExportState());
+
+        AgentFunctionCallContent call = Assert.Single(imported.Messages.SelectMany(message => message.Contents).OfType<AgentFunctionCallContent>());
+        AgentFunctionResultContent result = Assert.Single(imported.Messages.SelectMany(message => message.Contents).OfType<AgentFunctionResultContent>());
+        Assert.Equal("call-1", call.CallId);
+        Assert.Equal(2, call.Arguments["a"]!.GetValue<int>());
+        Assert.Equal("call-1", result.CallId);
+        Assert.Equal("5", result.Result);
+    }
+
+    [Fact]
+    public async Task ExcessToolCallsTerminateExplicitly()
+    {
+        var sink = new InMemoryAgentEventSink();
+        var client = new ScriptedChatClient(new ChatResponse(new ChatMessage(ChatRole.Assistant, [
+            new FunctionCallContent("call-1", "echo", new Dictionary<string, object?>()),
+            new FunctionCallContent("call-2", "echo", new Dictionary<string, object?>())])));
+        var tool = new DelegateAIFunction("echo", "echo", (a, ct) => ValueTask.FromResult<object?>("unexpected"));
+
+        AgentTurnResult turn = await new AgentKitRuntime(
+            client,
+            [tool],
+            new AgentKitOptions { MaxToolCallsPerRound = 1 },
+            sink).RunTurnAsync(AgentConversation.Create(), "too many");
+
+        Assert.Equal(AgentStopReason.ToolCallLimit, turn.StopReason);
+        Assert.Contains(sink.Events, agentEvent => agentEvent.Kind == AgentEventKind.TurnLimitReached);
+        Assert.DoesNotContain(sink.Events, agentEvent => agentEvent.Kind == AgentEventKind.ToolCallStarted);
+    }
 }
