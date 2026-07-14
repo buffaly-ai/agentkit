@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 namespace Buffaly.AgentKit;
 public sealed class AgentKitOptions { public int MaxRounds{get;set;}=8; public int MaxToolCallsPerRound{get;set;}=8; public TimeSpan ToolTimeout{get;set;}=TimeSpan.FromMinutes(2); public int MaxToolResultCharacters{get;set;}=100_000; }
 public enum AgentMessageRole { System,User,Assistant,Tool }
-public enum AgentStopReason { FinalAnswer,MaxRounds,ToolCallLimit,Cancelled }
+public enum AgentStopReason { FinalAnswer,MaxRounds,ToolCallLimit,Cancelled,Failed }
 public sealed record AgentTurnResult(AgentStopReason StopReason,string? FinalAnswer,int Rounds,IReadOnlyList<AgentMessage> Messages);
 public enum AgentEventKind { TurnStarted,UserMessageAdded,RoundStarted,ModelRequestStarted,ModelResponseReceived,AssistantFunctionCallAdded,ToolCallStarted,ToolCallCompleted,ToolCallDenied,ToolCallFailed,AssistantMessageAdded,TurnCompleted,TurnFailed,TurnLimitReached,ToolsLoading,ToolsLoaded,ToolsLoadFailed }
 public sealed class AgentEvent

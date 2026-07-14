@@ -26,6 +26,20 @@ public sealed class DenyAllPolicy : IAgentToolPolicy
     public ValueTask<AgentToolPolicyDecision> EvaluateAsync(string toolName, IReadOnlyDictionary<string, object?> arguments, CancellationToken cancellationToken = default) => ValueTask.FromResult(AgentToolPolicyDecision.Deny("blocked"));
 }
 
+public sealed class CancellingChatClient(CancellationTokenSource cancellation) : IChatClient
+{
+    public async Task<ChatResponse> GetResponseAsync(IEnumerable<ChatMessage> messages, ChatOptions? options = null, CancellationToken cancellationToken = default)
+    {
+        cancellation.Cancel();
+        await Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken);
+        throw new InvalidOperationException("Cancellation was not observed.");
+    }
+
+    public IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(IEnumerable<ChatMessage> messages, ChatOptions? options = null, CancellationToken cancellationToken = default) => throw new NotSupportedException();
+    public object? GetService(Type serviceType, object? serviceKey = null) => serviceType.IsInstanceOfType(this) ? this : null;
+    public void Dispose() { }
+}
+
 public class AgentKitRuntimeTests
 {
     [Fact]
@@ -92,6 +106,44 @@ public class AgentKitRuntimeTests
     }
 
     [Fact]
+    public async Task ProviderExceptionEmitsTurnFailedAndReturnsFailure()
+    {
+        var sink = new InMemoryAgentEventSink();
+        AgentTurnResult result = await new AgentKitRuntime(new ScriptedChatClient(), eventSink: sink)
+            .RunTurnAsync(AgentConversation.Create(), "fail");
+
+        Assert.Equal(AgentStopReason.Failed, result.StopReason);
+        AgentEvent failed = Assert.Single(sink.Events.Where(agentEvent => agentEvent.Kind == AgentEventKind.TurnFailed));
+        Assert.EndsWith("InvalidOperationException", failed.Data["errorType"]!.GetValue<string>());
+        Assert.DoesNotContain(sink.Events, agentEvent => agentEvent.Kind == AgentEventKind.TurnCompleted);
+    }
+
+    [Fact]
+    public async Task CancellationReturnsDistinctCanceledResult()
+    {
+        var sink = new InMemoryAgentEventSink();
+        using var cancellation = new CancellationTokenSource();
+        AgentTurnResult result = await new AgentKitRuntime(new CancellingChatClient(cancellation), eventSink: sink)
+            .RunTurnAsync(AgentConversation.Create(), "cancel", cancellation.Token);
+
+        Assert.Equal(AgentStopReason.Cancelled, result.StopReason);
+        Assert.Contains(sink.Events, agentEvent => agentEvent.Kind == AgentEventKind.TurnFailed && agentEvent.Data["errorType"]!.GetValue<string>() == "OperationCanceledException");
+    }
+
+    [Fact]
+    public async Task EmptyAssistantResponseFailsTurn()
+    {
+        var sink = new InMemoryAgentEventSink();
+        var response = new ChatResponse(new ChatMessage(ChatRole.Assistant, []));
+        AgentTurnResult result = await new AgentKitRuntime(new ScriptedChatClient(response), eventSink: sink)
+            .RunTurnAsync(AgentConversation.Create(), "empty");
+
+        Assert.Equal(AgentStopReason.Failed, result.StopReason);
+        Assert.Contains(sink.Events, agentEvent => agentEvent.Kind == AgentEventKind.TurnFailed && agentEvent.Data["errorType"]!.GetValue<string>() == "EmptyModelResponse");
+        Assert.DoesNotContain(sink.Events, agentEvent => agentEvent.Kind == AgentEventKind.TurnCompleted);
+    }
+
+    [Fact]
     public void ConversationExportImportPreservesHistory()
     {
         var c = AgentConversation.Create("id1");
@@ -107,6 +159,75 @@ public class AgentKitRuntimeTests
         var sink = new InMemoryAgentEventSink();
         await new AgentKitRuntime(new ScriptedChatClient(new ChatResponse(new ChatMessage(ChatRole.Assistant, "ok"))), eventSink: sink).RunTurnAsync(AgentConversation.Create(), "hi");
         Assert.Equal(sink.Events.Select(e => e.Sequence).Order(), sink.Events.Select(e => e.Sequence));
+    }
+
+    [Fact]
+    public async Task MaximumRoundsEmitsLimitInsteadOfCompletion()
+    {
+        var sink = new InMemoryAgentEventSink();
+        var response = new ChatResponse(new ChatMessage(ChatRole.Assistant, [new FunctionCallContent("call", "loop", new Dictionary<string, object?>())]));
+        var tool = new DelegateAIFunction("loop", "loop", (arguments, cancellationToken) => ValueTask.FromResult<object?>("again"));
+        AgentTurnResult result = await new AgentKitRuntime(new ScriptedChatClient(response), [tool], new AgentKitOptions { MaxRounds = 1 }, sink)
+            .RunTurnAsync(AgentConversation.Create(), "loop");
+
+        Assert.Equal(AgentStopReason.MaxRounds, result.StopReason);
+        Assert.Contains(sink.Events, agentEvent => agentEvent.Kind == AgentEventKind.TurnLimitReached);
+        Assert.DoesNotContain(sink.Events, agentEvent => agentEvent.Kind == AgentEventKind.TurnCompleted);
+    }
+
+    [Fact]
+    public async Task UnknownToolProducesStructuredFailureEvent()
+    {
+        var sink = new InMemoryAgentEventSink();
+        var client = new ScriptedChatClient(
+            new ChatResponse(new ChatMessage(ChatRole.Assistant, [new FunctionCallContent("missing-1", "missing", new Dictionary<string, object?>())])),
+            new ChatResponse(new ChatMessage(ChatRole.Assistant, "handled")));
+        await new AgentKitRuntime(client, eventSink: sink).RunTurnAsync(AgentConversation.Create(), "missing");
+
+        AgentEvent failed = Assert.Single(sink.Events.Where(agentEvent => agentEvent.Kind == AgentEventKind.ToolCallFailed));
+        Assert.Equal("UnknownTool", failed.Data["errorType"]!.GetValue<string>());
+        Assert.Equal("missing", failed.Data["toolName"]!.GetValue<string>());
+        Assert.Equal("missing-1", failed.Data["callId"]!.GetValue<string>());
+    }
+
+    [Fact]
+    public async Task PolicyDenialEmitsDeniedEventAndErrorResult()
+    {
+        var sink = new InMemoryAgentEventSink();
+        var client = new ScriptedChatClient(
+            new ChatResponse(new ChatMessage(ChatRole.Assistant, [new FunctionCallContent("deny-1", "tool", new Dictionary<string, object?>())])),
+            new ChatResponse(new ChatMessage(ChatRole.Assistant, "handled")));
+        var tool = new DelegateAIFunction("tool", "tool", (arguments, cancellationToken) => ValueTask.FromResult<object?>("unexpected"));
+        var conversation = AgentConversation.Create();
+        await new AgentKitRuntime(client, [tool], eventSink: sink, toolPolicy: new DenyAllPolicy()).RunTurnAsync(conversation, "deny");
+
+        Assert.Contains(sink.Events, agentEvent => agentEvent.Kind == AgentEventKind.ToolCallDenied && agentEvent.Data["reason"]!.GetValue<string>() == "blocked");
+        Assert.True(Assert.Single(conversation.Messages.SelectMany(message => message.Contents).OfType<AgentFunctionResultContent>()).IsError);
+        Assert.DoesNotContain(sink.Events, agentEvent => agentEvent.Kind == AgentEventKind.ToolCallCompleted);
+    }
+
+    [Fact]
+    public async Task ToolCompletionRecordsDurationAndTruncation()
+    {
+        var sink = new InMemoryAgentEventSink();
+        var client = new ScriptedChatClient(
+            new ChatResponse(new ChatMessage(ChatRole.Assistant, [new FunctionCallContent("long-1", "long", new Dictionary<string, object?>())])),
+            new ChatResponse(new ChatMessage(ChatRole.Assistant, "handled")));
+        var tool = new DelegateAIFunction("long", "long", (arguments, cancellationToken) => ValueTask.FromResult<object?>("123456"));
+        await new AgentKitRuntime(client, [tool], new AgentKitOptions { MaxToolResultCharacters = 3 }, sink).RunTurnAsync(AgentConversation.Create(), "long");
+
+        AgentEvent completed = Assert.Single(sink.Events.Where(agentEvent => agentEvent.Kind == AgentEventKind.ToolCallCompleted));
+        Assert.Equal("123", completed.Data["result"]!.GetValue<string>());
+        Assert.True(completed.Data["resultTruncated"]!.GetValue<bool>());
+        Assert.True(completed.Data["durationMilliseconds"]!.GetValue<long>() >= 0);
+    }
+
+    [Fact]
+    public async Task FinalAnswerCombinesAllAssistantTextContent()
+    {
+        var response = new ChatResponse(new ChatMessage(ChatRole.Assistant, [new TextContent("The result "), new TextContent("is 42.")]));
+        AgentTurnResult result = await new AgentKitRuntime(new ScriptedChatClient(response)).RunTurnAsync(AgentConversation.Create(), "answer");
+        Assert.Equal("The result is 42.", result.FinalAnswer);
     }
 
     [Fact]

@@ -22,13 +22,13 @@ public sealed class AgentKitRuntime
     }
     if(assistant.Count>0)conv.Add(new(AgentMessageRole.Assistant,assistant));var calls=response.Messages.SelectMany(m=>m.Contents).OfType<FunctionCallContent>().ToList();
     if(calls.Count>_options.MaxToolCallsPerRound){await Emit(conv.Id,turnId,round,AgentEventKind.TurnLimitReached,new(){{"limit",_options.MaxToolCallsPerRound},{"observed",calls.Count}},ct);return new(AgentStopReason.ToolCallLimit,null,round,conv.Messages);}
-    if(calls.Count==0){string final=string.Concat(assistant.OfType<AgentTextContent>().Select(x=>x.Text));await Emit(conv.Id,turnId,round,AgentEventKind.AssistantMessageAdded,new(){{"text",final}},ct);await Emit(conv.Id,turnId,round,AgentEventKind.TurnCompleted,new(){{"stopReason","FinalAnswer"}},ct);return new(AgentStopReason.FinalAnswer,final,round,conv.Messages);}
+     if(calls.Count==0){string final=string.Concat(assistant.OfType<AgentTextContent>().Select(x=>x.Text));if(string.IsNullOrWhiteSpace(final)){await Emit(conv.Id,turnId,round,AgentEventKind.TurnFailed,new(){{"errorType","EmptyModelResponse"},{"errorMessage","The model returned no assistant text or function calls."}},ct);return new(AgentStopReason.Failed,null,round,conv.Messages);}await Emit(conv.Id,turnId,round,AgentEventKind.AssistantMessageAdded,new(){{"text",final}},ct);await Emit(conv.Id,turnId,round,AgentEventKind.TurnCompleted,new(){{"stopReason","FinalAnswer"}},ct);return new(AgentStopReason.FinalAnswer,final,round,conv.Messages);}
     foreach(var call in calls)conv.Add(new(AgentMessageRole.Tool,new AgentMessageContent[]{await Invoke(conv.Id,turnId,round,call,ct)}));
    }
    await Emit(conv.Id,turnId,_options.MaxRounds,AgentEventKind.TurnLimitReached,new(){{"limit",_options.MaxRounds}},ct);return new(AgentStopReason.MaxRounds,null,_options.MaxRounds,conv.Messages);
   }
   catch(OperationCanceledException)when(ct.IsCancellationRequested){await Emit(conv.Id,turnId,round,AgentEventKind.TurnFailed,new(){{"errorType","OperationCanceledException"},{"errorMessage","Turn canceled."}},CancellationToken.None);return new(AgentStopReason.Cancelled,null,round,conv.Messages);}
-  catch(Exception ex){await Emit(conv.Id,turnId,round,AgentEventKind.TurnFailed,new(){{"errorType",ex.GetType().FullName},{"errorMessage",ex.Message}},CancellationToken.None);throw;}
+   catch(Exception ex){await Emit(conv.Id,turnId,round,AgentEventKind.TurnFailed,new(){{"errorType",ex.GetType().FullName},{"errorMessage",ex.Message}},CancellationToken.None);return new(AgentStopReason.Failed,null,round,conv.Messages);}
  }
  async Task<AgentFunctionResultContent> Invoke(string cid,string tid,int round,FunctionCallContent call,CancellationToken ct)
  {
