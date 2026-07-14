@@ -34,11 +34,10 @@ prototype AddNumbers
       "prototype": "AddNumbers",
       "method": "Execute",
       "description": "Add two integers.",
-      "parameters": [
-        { "name": "a", "type": "int", "required": true },
-        { "name": "b", "type": "int", "required": true }
-      ],
-      "returnType": "int"
+      "parameterDescriptions": {
+        "a": "First integer.",
+        "b": "Second integer."
+      }
     }
   ]
 }
@@ -53,10 +52,9 @@ Fields:
 - `prototype`: optional ProtoScript prototype name for instance/prototype methods.
 - `method`: method/function name to invoke.
 - `description`: tool description exposed to the provider.
-- `parameters`: name/type/description/required metadata.
-- `returnType`: return type metadata.
+- `parameterDescriptions`: optional descriptions keyed by compiled parameter name. Unknown names fail loading.
 
-## Supported manifest types
+## Supported compiled types
 
 - `string`
 - `int`
@@ -68,7 +66,7 @@ Fields:
 - `JsonObject`
 - `JsonArray`
 
-The manifest converter accepts these types. The frozen ProtoScript compiler may not accept every .NET type name as a script-language signature. The included samples use compiler-compatible script signatures such as `int`, `string`, and `bool`.
+The `.pts` function signature is authoritative. Agent Kit reads parameter names, parameter types, and the return type from the compiled `FunctionRuntimeInfo`, projects all compiled parameters as required in JSON Schema, and rejects unsupported compiled types while loading. The manifest does not duplicate types or required flags.
 
 ## Loading tools
 
@@ -89,7 +87,7 @@ var options = new ProtoScriptToolSetOptions
 };
 ```
 
-`Globals` exists on `ProtoScriptToolSetOptions` for future/global binding scenarios; the current loader does not require it for the included samples.
+`ProtoScriptToolSetOptions` intentionally exposes only implemented behavior. Calls through one tool set are bounded by `InvocationTimeout`.
 
 ## Mixing C# and ProtoScript tools
 
@@ -117,3 +115,4 @@ The ProtoScript interpreter is invoked through a `SemaphoreSlim`. Calls through 
 - `samples/DevOps.IncidentInvestigation/AgentTools/IncidentRules.pts`
 - `samples/Medical.ReferralReadiness/AgentTools/ReferralRules.pts`
 - `samples/Commerce.ReturnResolution/AgentTools/ReturnPolicyRules.pts`
+

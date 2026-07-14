@@ -2,19 +2,69 @@ using System.Text.Json;
 
 namespace Buffaly.AgentKit.ProtoScript;
 
+internal sealed record ProtoScriptParameterSignature(string Name, Type RuntimeType, string TypeName, string Description);
+
+internal sealed record ProtoScriptFunctionSignature(
+    IReadOnlyList<ProtoScriptParameterSignature> Parameters,
+    Type ReturnRuntimeType,
+    string ReturnTypeName);
+
 public static class ToolSchemaMapper
 {
-    public static JsonElement CreateSchema(AgentKitManifestExport export)
+    internal static JsonElement CreateSchema(ProtoScriptFunctionSignature signature)
     {
-        using var document = JsonDocument.Parse(JsonSerializer.Serialize(new
+        var properties = signature.Parameters.ToDictionary(
+            parameter => parameter.Name,
+            parameter => new
+            {
+                type = ToJsonSchemaType(parameter.RuntimeType),
+                description = parameter.Description
+            });
+
+        using JsonDocument document = JsonDocument.Parse(JsonSerializer.Serialize(new
         {
             type = "object",
-            properties = export.Parameters.ToDictionary(p => p.Name, p => new { type = ToJsonSchemaType(p.Type), description = p.Description }),
-            required = export.Parameters.Where(p => p.Required).Select(p => p.Name).ToArray(),
+            properties,
+            required = signature.Parameters.Select(parameter => parameter.Name).ToArray(),
             additionalProperties = false
         }));
         return document.RootElement.Clone();
     }
 
-    private static string ToJsonSchemaType(string type) => type.Equals("bool", StringComparison.OrdinalIgnoreCase) ? "boolean" : type.Equals("int", StringComparison.OrdinalIgnoreCase) || type.Equals("long", StringComparison.OrdinalIgnoreCase) || type.Equals("decimal", StringComparison.OrdinalIgnoreCase) || type.Equals("double", StringComparison.OrdinalIgnoreCase) || type.Equals("float", StringComparison.OrdinalIgnoreCase) ? "number" : type.Equals("JsonObject", StringComparison.OrdinalIgnoreCase) ? "object" : type.Equals("JsonArray", StringComparison.OrdinalIgnoreCase) ? "array" : "string";
+    internal static bool IsSupported(Type type) =>
+        type == typeof(string) ||
+        type == typeof(int) ||
+        type == typeof(long) ||
+        type == typeof(decimal) ||
+        type == typeof(double) ||
+        type == typeof(float) ||
+        type == typeof(bool) ||
+        type == typeof(System.Text.Json.Nodes.JsonObject) ||
+        type == typeof(System.Text.Json.Nodes.JsonArray);
+
+    internal static string GetTypeName(Type type) => type == typeof(System.Text.Json.Nodes.JsonObject)
+        ? "JsonObject"
+        : type == typeof(System.Text.Json.Nodes.JsonArray)
+            ? "JsonArray"
+            : type.Name switch
+            {
+                nameof(String) => "string",
+                nameof(Int32) => "int",
+                nameof(Int64) => "long",
+                nameof(Decimal) => "decimal",
+                nameof(Double) => "double",
+                nameof(Single) => "float",
+                nameof(Boolean) => "bool",
+                _ => type.FullName ?? type.Name
+            };
+
+    private static string ToJsonSchemaType(Type type) => type == typeof(bool)
+        ? "boolean"
+        : type == typeof(int) || type == typeof(long) || type == typeof(decimal) || type == typeof(double) || type == typeof(float)
+            ? "number"
+            : type == typeof(System.Text.Json.Nodes.JsonObject)
+                ? "object"
+                : type == typeof(System.Text.Json.Nodes.JsonArray)
+                    ? "array"
+                    : "string";
 }

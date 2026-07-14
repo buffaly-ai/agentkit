@@ -1,18 +1,12 @@
 {
   "schemaVersion": 1,
   "projectFile": "ReferralRules.pts",
-  "exports": [{
-    "name": "assess_referral_readiness",
-    "prototype": "AssessReferralReadiness",
-    "method": "Execute",
-    "description": "Apply administrative referral-packet requirements. This tool does not make clinical decisions.",
-    "parameters": [
-      { "name": "serviceLine", "type": "string", "required": true },
-      { "name": "hasSignedOrder", "type": "bool", "required": true },
-      { "name": "hasInsuranceAuthorization", "type": "bool", "required": true },
-      { "name": "hasClinicalSummary", "type": "bool", "required": true },
-      { "name": "hasRelevantImaging", "type": "bool", "required": true }
-    ],
-    "returnType": "string"
-  }]
+  "exports": [
+    {
+      "name": "assess_referral_readiness",
+      "prototype": "AssessReferralReadiness",
+      "method": "Execute",
+      "description": "Apply administrative referral-packet requirements. This tool does not make clinical decisions."
+    }
+  ]
 }

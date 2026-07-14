@@ -33,7 +33,13 @@ public static class BuffalyAgentKitEndpointRouteBuilderExtensions
         });
 
         var api = group.MapGroup("/api");
-        api.MapGet("/tools", (IEnumerable<Microsoft.Extensions.AI.AIFunction> tools) => Results.Ok(tools.Select(t => new { name = t.Name, description = t.Description, schema = t.JsonSchema })));
+        api.MapGet("/tools", (IEnumerable<Microsoft.Extensions.AI.AIFunction> tools) => Results.Ok(tools.Select(t => new
+        {
+            name = t.Name,
+            description = t.Description,
+            schema = t.JsonSchema,
+            metadata = t.AdditionalProperties
+        })));
         api.MapGet("/conversations", async (IAgentConversationStore store, CancellationToken ct) => Results.Ok(await store.ListAsync(ct)));
         api.MapPost("/conversations", async (CreateConversationRequest request, IAgentConversationStore store, CancellationToken ct) => { AgentConversation c = AgentConversation.Create(); if (!string.IsNullOrWhiteSpace(request.SystemPrompt)) c.AddSystemMessage(request.SystemPrompt); await store.SaveAsync(c, ct); return Results.Ok(new { conversationId = c.Id, id = c.Id }); });
         api.MapGet("/conversations/{id}", async (string id, IAgentConversationStore store, CancellationToken ct) => await store.LoadAsync(id, ct) is { } c ? Results.Text(c.ExportState(), "application/json") : Results.NotFound());

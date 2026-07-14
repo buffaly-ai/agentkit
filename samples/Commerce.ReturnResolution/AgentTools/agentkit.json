@@ -2,17 +2,17 @@
   "schemaVersion": 1,
   "projectFile": "ReturnPolicyRules.pts",
   "exports": [
-    { "name": "evaluate_return_eligibility", "prototype": "EvaluateReturnEligibility", "method": "Execute", "description": "Evaluate synthetic return eligibility.", "parameters": [
-      { "name": "daysSinceDelivery", "type": "int", "required": true },
-      { "name": "reason", "type": "string", "required": true },
-      { "name": "itemCondition", "type": "string", "required": true },
-      { "name": "isFinalSale", "type": "bool", "required": true }
-    ], "returnType": "string" },
-    { "name": "calculate_refund_amount", "prototype": "CalculateRefundAmount", "method": "Execute", "description": "Calculate permitted synthetic refund amount.", "parameters": [
-      { "name": "merchandiseAmountCents", "type": "int", "required": true },
-      { "name": "shippingAmountCents", "type": "int", "required": true },
-      { "name": "restockingPercent", "type": "int", "required": true },
-      { "name": "refundShipping", "type": "bool", "required": true }
-    ], "returnType": "int" }
+    {
+      "name": "evaluate_return_eligibility",
+      "prototype": "EvaluateReturnEligibility",
+      "method": "Execute",
+      "description": "Evaluate synthetic return eligibility."
+    },
+    {
+      "name": "calculate_refund_amount",
+      "prototype": "CalculateRefundAmount",
+      "method": "Execute",
+      "description": "Calculate permitted synthetic refund amount."
+    }
   ]
 }
