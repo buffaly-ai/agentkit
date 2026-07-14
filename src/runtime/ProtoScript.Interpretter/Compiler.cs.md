@@ -4,6 +4,10 @@
 - Compile `int + int` as integer addition while retaining string concatenation for other supported `+` operands.
 - Design Decision: make the compiled expression type match runtime arithmetic so integer-returning ProtoScript tools can use input-dependent addition without a false string-to-int diagnostic.
 
+## Integer Arithmetic Operators (2026-07-14)
+- Compile subtraction, multiplication, and division as typed integer expressions and reject non-integer operands.
+- Design Decision: keep the frozen runtime arithmetic surface explicit and sufficient for deterministic rule calculations.
+
 ## Include Missing-File Diagnostics (2026-03-12)
 - Updated include-file parsing flow to carry include-site context into missing-file failures.
 - Design Decision: wrap missing include targets as `ProtoScriptCompilerException` with `IncludeStatement.Info` so callers receive file/offset for the failing include line instead of a contextless runtime error.

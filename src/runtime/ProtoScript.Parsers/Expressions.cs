@@ -271,6 +271,15 @@ throw;
 		{
 			switch (strOp)
 			{
+				case "*":
+				case "/":
+				case "%":
+					return 1;
+
+				case "+":
+				case "-":
+					return 2;
+
 				case "=":
 				case "+=":
 				case "-=":
@@ -286,30 +295,30 @@ throw;
 
 				case ".":
 				case "[]":
-					return 1;		
+					return 0;		
 
 				case ">":
 				case ">=":
 				case "<":
 				case "<=":
-					return 2;
+					return 3;
 
 				case "typeof":
 				case "==":
 				case "!=":
-					return 3;
+					return 4;
 
 				case "&&":
 				case "||":
 				case "??":
-					return 4;
+					return 5;
 
 				case "?":
 				case ":":
-					return 5;
+					return 6;
 
 				default:
-					return 3;
+					return 4;
 			}
 
 		}

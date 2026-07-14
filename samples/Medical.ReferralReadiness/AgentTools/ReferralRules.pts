@@ -2,6 +2,16 @@ prototype AssessReferralReadiness
 {
     function Execute(string serviceLine, bool hasSignedOrder, bool hasInsuranceAuthorization, bool hasClinicalSummary, bool hasRelevantImaging): string
     {
-        return "{\"status\":\"needs_information\",\"missingItems\":[\"signed referral order\",\"relevant imaging report\"],\"administrativeOnly\":true}";
+        if (!hasSignedOrder && !hasRelevantImaging)
+            return "{\"status\":\"needs_information\",\"missingItems\":[\"signed referral order\",\"relevant imaging report\"],\"administrativeOnly\":true}";
+        if (!hasInsuranceAuthorization)
+            return "{\"status\":\"needs_information\",\"missingItems\":[\"insurance authorization\"],\"administrativeOnly\":true}";
+        if (!hasClinicalSummary)
+            return "{\"status\":\"needs_information\",\"missingItems\":[\"clinical summary\"],\"administrativeOnly\":true}";
+        if (!hasSignedOrder)
+            return "{\"status\":\"needs_information\",\"missingItems\":[\"signed referral order\"],\"administrativeOnly\":true}";
+        if (!hasRelevantImaging)
+            return "{\"status\":\"needs_information\",\"missingItems\":[\"relevant imaging report\"],\"administrativeOnly\":true}";
+        return "{\"status\":\"ready\",\"missingItems\":[],\"administrativeOnly\":true}";
     }
 }

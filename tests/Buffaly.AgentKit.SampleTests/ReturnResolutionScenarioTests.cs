@@ -30,8 +30,12 @@ public class ReturnResolutionScenarioTests
         Assert.Contains(events.Events, e => e.ToolName == "calculate_refund_amount" && e.Kind == AgentEventKind.ToolCallCompleted);
         Assert.Single(written);
         Assert.Equal("pending_human_approval", written[0].Status);
+        Assert.Equal(92.90m, written[0].Amount);
         Assert.Equal(before, File.ReadAllText(Path.Combine(sample, "Data", "orders.json")));
         Assert.DoesNotContain("refund has been issued", result.FinalAnswer!, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("approval", result.FinalAnswer!, StringComparison.OrdinalIgnoreCase);
     }
 }
+
+
+

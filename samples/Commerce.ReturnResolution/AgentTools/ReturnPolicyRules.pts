@@ -2,7 +2,15 @@ prototype EvaluateReturnEligibility
 {
     function Execute(int daysSinceDelivery, string reason, string itemCondition, bool isFinalSale): string
     {
-        return "{\"status\":\"eligible\",\"refundShipping\":false,\"restockingPercent\":0,\"rule\":\"damaged_item_within_window\"}";
+        if (isFinalSale)
+            return "{\"status\":\"ineligible\",\"refundShipping\":false,\"restockingPercent\":0,\"rule\":\"final_sale\"}";
+        if (daysSinceDelivery > 30)
+            return "{\"status\":\"manual_review\",\"refundShipping\":false,\"restockingPercent\":0,\"rule\":\"outside_return_window\"}";
+        if (reason == "damaged")
+            return "{\"status\":\"eligible\",\"refundShipping\":true,\"restockingPercent\":0,\"rule\":\"damaged_item_within_window\"}";
+        if (itemCondition == "damaged")
+            return "{\"status\":\"eligible\",\"refundShipping\":true,\"restockingPercent\":0,\"rule\":\"damaged_item_within_window\"}";
+        return "{\"status\":\"eligible\",\"refundShipping\":false,\"restockingPercent\":10,\"rule\":\"standard_return_with_restocking\"}";
     }
 }
 
@@ -10,6 +18,8 @@ prototype CalculateRefundAmount
 {
     function Execute(int merchandiseAmountCents, int shippingAmountCents, int restockingPercent, bool refundShipping): int
     {
-        return merchandiseAmountCents;
+        if (refundShipping)
+            return (merchandiseAmountCents - ((merchandiseAmountCents * restockingPercent) / 100)) + shippingAmountCents;
+        return merchandiseAmountCents - ((merchandiseAmountCents * restockingPercent) / 100);
     }
 }

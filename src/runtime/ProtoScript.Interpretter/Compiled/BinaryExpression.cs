@@ -1,4 +1,4 @@
-﻿namespace ProtoScript.Interpretter.Compiled
+namespace ProtoScript.Interpretter.Compiled
 {
 	public class BinaryExpression : Expression
 	{
@@ -8,5 +8,10 @@
 
 	public class AddOperator : BinaryExpression
 	{
+	}
+
+	public class IntegerArithmeticOperator : BinaryExpression
+	{
+		public string Operator;
 	}
 }

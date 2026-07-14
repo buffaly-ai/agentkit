@@ -4,6 +4,11 @@
 - Evaluate an `AddOperator` inferred as `int` by converting both operands once and returning their integer sum.
 - Design Decision: dispatch from compiled type metadata, preserving existing string-concatenation behavior for string-valued additions.
 
+## Primitive Rule Evaluation (2026-07-14)
+- Evaluate typed integer subtraction, multiplication, and division, including explicit divide-by-zero failure.
+- Compare string-typed primitive operands after conversion so script parameters can be matched against string literals.
+- Design Decision: use compiled type metadata for primitive dispatch rather than falling through to prototype comparison.
+
 ## Return Type Coercion on External Invocation (2026-03-13)
 - Added declared return-type coercion in the external `RunMethod(...)` invocation path used by `RunMethodAsObject(...)`.
 - Design Decision: align external method execution with internal evaluation behavior so runtime return contracts (including `StringRef`) are enforced consistently.

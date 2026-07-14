@@ -1338,6 +1338,9 @@ import Ontology.Simulation Ontology.Simulation.BoolWrapper Boolean;
 			if (exp.Value == "+")
 				return CompileAddOperator(exp);
 
+			if (exp.Value == "-" || exp.Value == "*" || exp.Value == "/")
+				return CompileIntegerArithmeticOperator(exp);
+
 			if (exp.Value == ">" || exp.Value == "<" || exp.Value == ">=" || exp.Value == "<=")
 				return CompileComparisonOperator(exp);
 
@@ -1637,6 +1640,27 @@ import Ontology.Simulation Ontology.Simulation.BoolWrapper Boolean;
 				Left = compiledLeft,
 				Right = compiledRight,
 				InferredType = new TypeInfo(isIntegerAddition ? typeof(int) : typeof(string)),
+			};
+		}
+
+		public Compiled.Expression CompileIntegerArithmeticOperator(BinaryOperator op)
+		{
+			Compiled.Expression compiledLeft = Compile(op.Left);
+			Compiled.Expression compiledRight = Compile(op.Right);
+			TypeInfo integerType = new TypeInfo(typeof(int));
+			if (!SimpleInterpretter.IsAssignableFrom(compiledLeft?.InferredType, integerType) ||
+				!SimpleInterpretter.IsAssignableFrom(compiledRight?.InferredType, integerType))
+			{
+				this.AddDiagnostic(new Diagnostic($"Operator '{op.Value}' requires integer operands"), null, op);
+				return null;
+			}
+
+			return new Compiled.IntegerArithmeticOperator
+			{
+				Left = compiledLeft,
+				Right = compiledRight,
+				Operator = op.Value,
+				InferredType = integerType
 			};
 		}
 		public Compiled.Expression CompileAndOperator(BinaryOperator op)

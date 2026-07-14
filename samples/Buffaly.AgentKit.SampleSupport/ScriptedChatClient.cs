@@ -14,6 +14,8 @@ public sealed class ScriptedChatClient(ScenarioDefinition scenario) : IChatClien
 
         ChatMessage[] observed = messages.ToArray();
         ScriptedChatResponse next = scenario.Responses[_index++];
+        if (next.ResponseFactory is not null)
+            next = next.ResponseFactory(observed);
         ValidateObservedConversation(next, observed);
 
         if (!string.IsNullOrWhiteSpace(next.FunctionName))
@@ -110,3 +112,4 @@ public sealed class StrictArithmeticChatClient(int a, int b) : IChatClient
     public object? GetService(Type serviceType, object? serviceKey = null) => serviceType.IsInstanceOfType(this) ? this : null;
     public void Dispose() { }
 }
+

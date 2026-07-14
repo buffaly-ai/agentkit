@@ -1,3 +1,5 @@
+using Microsoft.Extensions.AI;
+
 namespace Buffaly.AgentKit.SampleSupport;
 
 public sealed class ScriptedChatResponse
@@ -7,6 +9,7 @@ public sealed class ScriptedChatResponse
     public string? FunctionName { get; init; }
     public Dictionary<string, object?> Arguments { get; init; } = new(StringComparer.Ordinal);
     public string? FinalText { get; init; }
+    internal Func<IReadOnlyList<ChatMessage>, ScriptedChatResponse>? ResponseFactory { get; init; }
 
     public static ScriptedChatResponse Call(string functionName, Dictionary<string, object?>? arguments = null, string? expectedLastToolName = null, string? expectedLastToolResultContains = null) => new()
     {
@@ -21,5 +24,10 @@ public sealed class ScriptedChatResponse
         FinalText = text,
         ExpectedLastToolName = expectedLastToolName,
         ExpectedLastToolResultContains = expectedLastToolResultContains
+    };
+
+    public static ScriptedChatResponse FromTranscript(Func<IReadOnlyList<ChatMessage>, ScriptedChatResponse> responseFactory) => new()
+    {
+        ResponseFactory = responseFactory
     };
 }

@@ -2,7 +2,14 @@ prototype ClassifyIncidentEvidence
 {
     function Execute(int errorRateTenthsPercent, int p95LatencyMs, int databasePoolUtilizationPercent, int minutesSinceDeployment): string
     {
-        return "{\"severity\":\"high\",\"signals\":[\"latency_threshold_exceeded\",\"database_pool_saturation\",\"recent_deployment_correlation\"],\"classification\":\"resource_saturation_with_recent_change\"}";
+        if (databasePoolUtilizationPercent >= 90 && minutesSinceDeployment <= 15)
+            return "{\"severity\":\"high\",\"signals\":[\"resource_saturation\",\"recent_deployment_correlation\"],\"classification\":\"database_pool_saturation\"}";
+        if (databasePoolUtilizationPercent >= 90)
+            return "{\"severity\":\"high\",\"signals\":[\"resource_saturation\"],\"classification\":\"database_pool_saturation\"}";
+        if (errorRateTenthsPercent >= 30 || p95LatencyMs >= 1500)
+            return "{\"severity\":\"high\",\"signals\":[\"high_error_or_latency\"],\"classification\":\"high\"}";
+        if (errorRateTenthsPercent >= 10 || p95LatencyMs >= 750)
+            return "{\"severity\":\"elevated\",\"signals\":[\"elevated_error_or_latency\"],\"classification\":\"elevated\"}";
+        return "{\"severity\":\"normal\",\"signals\":[],\"classification\":\"normal\"}";
     }
 }
-

@@ -27,9 +27,13 @@ public class ReferralReadinessScenarioTests
         Assert.Contains(events.Events, e => e.ToolName == "assess_referral_readiness" && e.Kind == AgentEventKind.ToolCallCompleted);
         Assert.Contains("signed referral order", allToolResults);
         Assert.Contains("relevant imaging report", allToolResults);
+        Assert.Contains("needs_information", result.FinalAnswer!);
+        Assert.Contains("signed referral order and relevant imaging report", result.FinalAnswer!);
         Assert.DoesNotContain("diagnosis is", result.FinalAnswer!, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("recommend treatment", result.FinalAnswer!, StringComparison.OrdinalIgnoreCase);
         Assert.True(events.Events.First().Kind == AgentEventKind.TurnStarted && events.Events.Last().Kind == AgentEventKind.TurnCompleted);
         Assert.False(Directory.Exists(Path.Combine(sample, "outside-storage-marker")));
     }
 }
+
+

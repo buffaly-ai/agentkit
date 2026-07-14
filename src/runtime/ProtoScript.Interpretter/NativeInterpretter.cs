@@ -1047,6 +1047,9 @@ namespace ProtoScript.Interpretter
 				case Compiled.AddOperator addOp:
 					return Evaluate(addOp);
 
+				case Compiled.IntegerArithmeticOperator arithmeticOp:
+					return Evaluate(arithmeticOp);
+
 				case Compiled.ComparisonOperator cmpOp:
 					return Evaluate(cmpOp);
 
@@ -1083,6 +1086,25 @@ namespace ProtoScript.Interpretter
 				throw new RuntimeException("Right side of '+' is not convertible to string", exp.Info);
 
 			return strLeft + strRight;
+		}
+
+		public object Evaluate(Compiled.IntegerArithmeticOperator exp)
+		{
+			object? leftObject = ValueConversions.GetAs(Evaluate(exp.Left), typeof(int));
+			object? rightObject = ValueConversions.GetAs(Evaluate(exp.Right), typeof(int));
+			if (!(leftObject is int left))
+				throw new RuntimeException($"Left side of '{exp.Operator}' is not convertible to int", exp.Info);
+			if (!(rightObject is int right))
+				throw new RuntimeException($"Right side of '{exp.Operator}' is not convertible to int", exp.Info);
+
+			return exp.Operator switch
+			{
+				"-" => left - right,
+				"*" => left * right,
+				"/" when right != 0 => left / right,
+				"/" => throw new DivideByZeroException("ProtoScript integer division by zero."),
+				_ => throw new RuntimeException($"Unsupported integer arithmetic operator '{exp.Operator}'", exp.Info)
+			};
 		}
 
 		public object Evaluate(Compiled.ComparisonOperator exp)
@@ -1254,6 +1276,13 @@ namespace ProtoScript.Interpretter
 			if (left?.GetType() == typeof(string) && right?.GetType() == typeof(string))
 			{
 				return ((string)left == (string)right);
+			}
+
+			if (exp.Left.InferredType?.Type == typeof(string) || exp.Right.InferredType?.Type == typeof(string))
+			{
+				string? convertedLeft = ValueConversions.GetAs(left, typeof(string)) as string;
+				string? convertedRight = ValueConversions.GetAs(right, typeof(string)) as string;
+				return string.Equals(convertedLeft, convertedRight, StringComparison.Ordinal);
 			}
 
 			Prototype protoLeft = GetAsPrototype(left);
