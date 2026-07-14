@@ -33,13 +33,22 @@ public static class BuffalyAgentKitEndpointRouteBuilderExtensions
         });
 
         var api = group.MapGroup("/api");
-        api.MapGet("/tools", (IEnumerable<Microsoft.Extensions.AI.AIFunction> tools) => Results.Ok(tools.Select(t => new
+        api.MapGet("/tools", (IServiceProvider services) =>
         {
-            name = t.Name,
-            description = t.Description,
-            schema = t.JsonSchema,
-            metadata = t.AdditionalProperties
-        })));
+            ProtoScriptToolCatalog? catalog = services.GetService<ProtoScriptToolCatalog>();
+            if (catalog is not null) return Results.Ok(catalog.Snapshot);
+            var tools = services.GetService<IReadOnlyList<Microsoft.Extensions.AI.AIFunction>>() ?? Array.Empty<Microsoft.Extensions.AI.AIFunction>();
+            return Results.Ok(new AgentToolCatalogSnapshot
+            {
+                Status = "Loaded",
+                LoadedAt = DateTimeOffset.UtcNow,
+                Tools = tools.Select(tool => new AgentToolDescriptor { Name = tool.Name, Description = tool.Description, Schema = tool.JsonSchema, Metadata = tool.AdditionalProperties }).ToArray()
+            });
+        });
+        api.MapPost("/tools/reload", async (IServiceProvider services, CancellationToken ct) =>
+            services.GetService<ProtoScriptToolCatalog>() is { } catalog
+                ? Results.Ok(await catalog.ReloadAsync(ct))
+                : Results.Conflict(new AgentToolCatalogSnapshot { Status = "NotLoaded", Errors = new[] { "No ProtoScript tool catalog is configured." } }));
         api.MapGet("/conversations", async (IAgentConversationStore store, CancellationToken ct) => Results.Ok(await store.ListAsync(ct)));
         api.MapPost("/conversations", async (CreateConversationRequest request, IAgentConversationStore store, CancellationToken ct) => { AgentConversation c = AgentConversation.Create(); if (!string.IsNullOrWhiteSpace(request.SystemPrompt)) c.AddSystemMessage(request.SystemPrompt); await store.SaveAsync(c, ct); return Results.Ok(new { conversationId = c.Id, id = c.Id }); });
         api.MapGet("/conversations/{id}", async (string id, IAgentConversationStore store, CancellationToken ct) => await store.LoadAsync(id, ct) is { } c ? Results.Text(c.ExportState(), "application/json") : Results.NotFound());

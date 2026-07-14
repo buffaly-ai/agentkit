@@ -25,6 +25,8 @@ public class AspNetCoreTests
         using TestServer server = CreateServer("/_agentkit", true);
         HttpResponseMessage response = await server.CreateClient().GetAsync("/_agentkit/api/tools");
         Assert.True(response.IsSuccessStatusCode);
+        AgentToolCatalogSnapshot snapshot = (await response.Content.ReadFromJsonAsync<AgentToolCatalogSnapshot>())!;
+        Assert.Equal("Loaded", snapshot.Status);
     }
 
     [Fact]
@@ -102,6 +104,64 @@ public class AspNetCoreTests
         Assert.True(File.Exists(Path.Combine(directory, conversation.Id, "conversation.json")));
         Assert.True(File.Exists(Path.Combine(directory, conversation.Id, "events.jsonl")));
         Assert.True(File.Exists(Path.Combine(directory, "conversations.jsonl")));
+    }
+
+    [Fact]
+    public async Task InvalidProtoScriptProjectProducesToolsLoadFailed()
+    {
+        (string manifest, _) = await CreateCatalogFixtureAsync("function Broken(int value): int { return missing; }");
+        var events = new InMemoryAgentEventSink();
+        await using var catalog = new ProtoScriptToolCatalog(manifest, null, events);
+
+        AgentToolCatalogSnapshot snapshot = await catalog.ReloadAsync();
+
+        Assert.Equal("Failed", snapshot.Status);
+        Assert.NotEmpty(snapshot.Errors);
+        Assert.Contains(events.Events, item => item.Kind == AgentEventKind.ToolsLoading);
+        Assert.Contains(events.Events, item => item.Kind == AgentEventKind.ToolsLoadFailed && item.Data["errorMessage"] is not null);
+    }
+
+    [Fact]
+    public async Task ReloadReplacesToolCatalogAtomically()
+    {
+        (string manifest, string project) = await CreateCatalogFixtureAsync("function Echo(string value): string { return value; }");
+        await using var catalog = new ProtoScriptToolCatalog(manifest, null, new InMemoryAgentEventSink());
+        Assert.Equal("Loaded", (await catalog.ReloadAsync()).Status);
+
+        await File.WriteAllTextAsync(project, "function Echo(string value): string { return value; }\nfunction Second(int value): int { return value; }");
+        await File.WriteAllTextAsync(manifest, """{"schemaVersion":1,"projectFile":"Project.pts","exports":[{"name":"echo","method":"Echo"},{"name":"second","method":"Second"}]}""");
+        AgentToolCatalogSnapshot second = await catalog.ReloadAsync();
+
+        Assert.Equal("Loaded", second.Status);
+        Assert.Equal(["echo", "second"], second.Tools.Select(tool => tool.Name).ToArray());
+        Assert.Equal(["echo", "second"], catalog.Tools.Select(tool => tool.Name).ToArray());
+    }
+
+    [Fact]
+    public async Task FailedReloadPreservesLastKnownGoodCatalog()
+    {
+        (string manifest, string project) = await CreateCatalogFixtureAsync("function Echo(string value): string { return value; }");
+        await using var catalog = new ProtoScriptToolCatalog(manifest, null, new InMemoryAgentEventSink());
+        Assert.Equal("Loaded", (await catalog.ReloadAsync()).Status);
+
+        await File.WriteAllTextAsync(project, "function Broken(int value): int { return missing; }");
+        AgentToolCatalogSnapshot failed = await catalog.ReloadAsync();
+
+        Assert.Equal("Failed", failed.Status);
+        Assert.Equal(["echo"], failed.Tools.Select(tool => tool.Name).ToArray());
+        Assert.Equal(["echo"], catalog.Tools.Select(tool => tool.Name).ToArray());
+        object? result = await catalog.Tools[0].InvokeAsync(new AIFunctionArguments(new Dictionary<string, object?> { ["value"] = "still-good" }));
+        Assert.Equal("still-good", result?.ToString());
+    }
+
+    private static async Task<(string Manifest, string Project)> CreateCatalogFixtureAsync(string source)
+    {
+        string directory = Directory.CreateTempSubdirectory("agentkit-catalog-").FullName;
+        string project = Path.Combine(directory, "Project.pts");
+        string manifest = Path.Combine(directory, "agentkit.json");
+        await File.WriteAllTextAsync(project, source);
+        await File.WriteAllTextAsync(manifest, """{"schemaVersion":1,"projectFile":"Project.pts","exports":[{"name":"echo","method":"Echo"}]}""");
+        return (manifest, project);
     }
 
     private static TestServer CreateServer(string prefix, bool inspector)
