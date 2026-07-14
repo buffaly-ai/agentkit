@@ -1,8 +1,14 @@
 {
-  "generatedUtc": "2026-07-14T02:54:40.3919956Z",
-  "archive": "buffaly-agentkit-1.0.0-source-20260714T025438Z.zip",
-  "bytes": 435482,
-  "sha256": "FF043795ECE3DB4DE66ABAEDD4B027F18BDAFDFDCBD1DCE47A7E49A82FE6A21A",
-  "fileCount": 378,
-  "commit": "d2995feeb1e5470ebb1dea36f81ef33cb7fc4506"
+  "schemaVersion": 1,
+  "archive": "buffaly-agentkit-1.0.0-source.zip",
+  "sha256": "093755ad74b099c781e3ea2814e7fd10cfb19b5f25039ad477e9398432d8e645",
+  "fileCount": 390,
+  "includes": [
+    "README.md",
+    "docs/",
+    ".github/workflows/build.yml",
+    "src/",
+    "samples/",
+    "tests/"
+  ]
 }

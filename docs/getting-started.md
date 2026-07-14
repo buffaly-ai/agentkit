@@ -4,7 +4,7 @@ This guide builds a minimal console application that runs a real Agent Kit turn 
 
 ## Prerequisites
 
-- .NET SDK `9.0.300` for this repository build. The intended release target is `net10.0`, but the current checked-in build targets `net9.0` because .NET 10 is not installed in the build environment.
+- .NET SDK `10.0.301` for this repository build. The intended release target is `net10.0`, but the current checked-in build targets `net10.0` because .NET 10 is not installed in the build environment.
 - A shell that can run `dotnet`.
 - Optional: a model provider package that exposes `Microsoft.Extensions.AI.IChatClient` when you replace the scripted client.
 
@@ -19,7 +19,7 @@ dotnet --version
 ```bash
 mkdir AgentKitQuickStart
 cd AgentKitQuickStart
-dotnet new console --framework net9.0
+dotnet new console --framework net10.0
 ```
 
 When packages are published, install:

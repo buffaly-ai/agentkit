@@ -58,13 +58,13 @@ public class PackagingTests
         string temp = Path.Combine(Path.GetTempPath(), "agentkit-embed-" + Guid.NewGuid().ToString("n"));
         Directory.CreateDirectory(temp);
         await File.WriteAllTextAsync(Path.Combine(temp, "NuGet.config"), $"<configuration><packageSources><clear/><add key=\"agentkit\" value=\"{packages}\"/><add key=\"nuget\" value=\"https://api.nuget.org/v3/index.json\"/></packageSources></configuration>");
-        await File.WriteAllTextAsync(Path.Combine(temp, "Embed.csproj"), "<Project Sdk=\"Microsoft.NET.Sdk\"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net9.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable><RestorePackagesPath>packages-cache</RestorePackagesPath></PropertyGroup><ItemGroup><PackageReference Include=\"Buffaly.AgentKit\" Version=\"1.0.0\"/><PackageReference Include=\"Buffaly.AgentKit.ProtoScript\" Version=\"1.0.0\"/><PackageReference Include=\"Buffaly.AgentKit.AspNetCore\" Version=\"1.0.0\"/></ItemGroup></Project>");
+        await File.WriteAllTextAsync(Path.Combine(temp, "Embed.csproj"), "<Project Sdk=\"Microsoft.NET.Sdk\"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable><RestorePackagesPath>packages-cache</RestorePackagesPath></PropertyGroup><ItemGroup><PackageReference Include=\"Buffaly.AgentKit\" Version=\"1.0.0\"/><PackageReference Include=\"Buffaly.AgentKit.ProtoScript\" Version=\"1.0.0\"/><PackageReference Include=\"Buffaly.AgentKit.AspNetCore\" Version=\"1.0.0\"/></ItemGroup></Project>");
         await File.WriteAllTextAsync(Path.Combine(temp, "Project.pts"), "function AddNumbers(int a, int b): int { return a + b; }");
         await File.WriteAllTextAsync(Path.Combine(temp, "agentkit.json"), "{\"schemaVersion\":1,\"projectFile\":\"Project.pts\",\"exports\":[{\"name\":\"add_numbers\",\"method\":\"AddNumbers\"}]}");
         await File.WriteAllTextAsync(Path.Combine(temp, "Program.cs"), ExternalConsumerProgram);
-        ProcessResult restore = await RunProcessAsync("dotnet", "restore Embed.csproj", temp);
+        ProcessResult restore = await RunProcessAsync(DotNetExecutable, "restore Embed.csproj", temp);
         Assert.True(restore.ExitCode == 0, restore.Output);
-        ProcessResult run = await RunProcessAsync("dotnet", "run --project Embed.csproj -c Release --no-restore", temp);
+        ProcessResult run = await RunProcessAsync(DotNetExecutable, "run --project Embed.csproj -c Release --no-restore", temp);
         Assert.True(run.ExitCode == 0, run.Output);
         Assert.Contains("AGENTKIT_PACKAGED_FLOW_OK:42", run.Output);
         ValidatePackageDependencies(packages);
@@ -104,6 +104,14 @@ sealed class StrictClient:IChatClient { int round; public bool Observed{get;priv
         string stderr = await process.StandardError.ReadToEndAsync();
         await process.WaitForExitAsync();
         return new ProcessResult(process.ExitCode, stdout + stderr);
+    }
+    private static string DotNetExecutable
+    {
+        get
+        {
+            string repositorySdk = Path.Combine(Root, ".dotnet", OperatingSystem.IsWindows() ? "dotnet.exe" : "dotnet");
+            return File.Exists(repositorySdk) ? repositorySdk : "dotnet";
+        }
     }
     private sealed record ProcessResult(int ExitCode, string Output);
 }

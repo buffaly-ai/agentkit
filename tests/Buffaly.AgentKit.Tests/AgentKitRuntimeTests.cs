@@ -113,7 +113,7 @@ public class AgentKitRuntimeTests
             .RunTurnAsync(AgentConversation.Create(), "fail");
 
         Assert.Equal(AgentStopReason.Failed, result.StopReason);
-        AgentEvent failed = Assert.Single(sink.Events.Where(agentEvent => agentEvent.Kind == AgentEventKind.TurnFailed));
+        AgentEvent failed = Assert.Single(sink.Events, agentEvent => agentEvent.Kind == AgentEventKind.TurnFailed);
         Assert.EndsWith("InvalidOperationException", failed.Data["errorType"]!.GetValue<string>());
         Assert.DoesNotContain(sink.Events, agentEvent => agentEvent.Kind == AgentEventKind.TurnCompleted);
     }
@@ -184,7 +184,7 @@ public class AgentKitRuntimeTests
             new ChatResponse(new ChatMessage(ChatRole.Assistant, "handled")));
         await new AgentKitRuntime(client, eventSink: sink).RunTurnAsync(AgentConversation.Create(), "missing");
 
-        AgentEvent failed = Assert.Single(sink.Events.Where(agentEvent => agentEvent.Kind == AgentEventKind.ToolCallFailed));
+        AgentEvent failed = Assert.Single(sink.Events, agentEvent => agentEvent.Kind == AgentEventKind.ToolCallFailed);
         Assert.Equal("UnknownTool", failed.Data["errorType"]!.GetValue<string>());
         Assert.Equal("missing", failed.Data["toolName"]!.GetValue<string>());
         Assert.Equal("missing-1", failed.Data["callId"]!.GetValue<string>());
@@ -216,7 +216,7 @@ public class AgentKitRuntimeTests
         var tool = new DelegateAIFunction("long", "long", (arguments, cancellationToken) => ValueTask.FromResult<object?>("123456"));
         await new AgentKitRuntime(client, [tool], new AgentKitOptions { MaxToolResultCharacters = 3 }, sink).RunTurnAsync(AgentConversation.Create(), "long");
 
-        AgentEvent completed = Assert.Single(sink.Events.Where(agentEvent => agentEvent.Kind == AgentEventKind.ToolCallCompleted));
+        AgentEvent completed = Assert.Single(sink.Events, agentEvent => agentEvent.Kind == AgentEventKind.ToolCallCompleted);
         Assert.Equal("123", completed.Data["result"]!.GetValue<string>());
         Assert.True(completed.Data["resultTruncated"]!.GetValue<bool>());
         Assert.True(completed.Data["durationMilliseconds"]!.GetValue<long>() >= 0);

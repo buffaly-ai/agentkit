@@ -22,3 +22,6 @@ debug_*.log
 
 
 samples/*/output/
+
+# Repository-local SDK used for reproducible release validation
+.dotnet/

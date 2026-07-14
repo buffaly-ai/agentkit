@@ -1,0 +1,126 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.6",
+  "serialNumber": "urn:uuid:2df79013-da65-4104-b3d7-03c6b3998778",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-07-14T17:33:24.7724465Z",
+    "component": {
+      "type": "application",
+      "name": "Buffaly.AgentKit",
+      "version": "1.0.0"
+    }
+  },
+  "components": [
+    {
+      "type": "library",
+      "name": "Buffaly.AgentKit",
+      "version": "1.0.0",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "2560c2ec64b4068ff14d60011fa07c4232c236738324fbb6e5bfe10ddd1e6f52"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "Buffaly.AgentKit.AspNetCore",
+      "version": "1.0.0",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "4a43c010fed390a6003c14bc2dd280b9f43f3646e848a9209ddd9f65581a8a75"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "Buffaly.AgentKit.ProtoScript",
+      "version": "1.0.0",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "86b6e93d3a888586a39b1ab9370d0cc1d51503e5529d57d7553761e634f32e79"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "Buffaly.Foundation.Runtime",
+      "version": "1.0.0",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "09acf40397e9288ffbe12443ec2a708ef4bbd3841509c7977c312e5aaef97be7"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "Ontology.Parsers",
+      "version": "1.0.0",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "7a3198a3be29e12ae1d676a6bc2bc0e73c8ef39dbbc5f56b440c6f7359b83a90"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "Ontology.Runtime",
+      "version": "1.0.0",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "3ff9badb36dc21d2297f1cd92fc71463a12a0885a659cd3976826e237e793349"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "Ontology.Simulation",
+      "version": "1.0.0",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "0952ae1149b9a0f30e2f9639eea593f88188045cc3fd9b86c74736c117a9f062"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "ProtoScript.Interpretter",
+      "version": "1.0.0",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "a12d99c7cac813fd0ade3abe1c64341a078b89fb3e3d5530cc33905ca4ebc0aa"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "ProtoScript.Parsers",
+      "version": "1.0.0",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "68c56132ea5449c7c7c30fc257417ab39e6a2b29060755cd5799b4dddbb55bab"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "ProtoScript.Runtime",
+      "version": "1.0.0",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "f43e09259051d8a89bc2276dd3fb789de0ca00af257ae772af3a39767a2c2776"
+        }
+      ]
+    }
+  ]
+}

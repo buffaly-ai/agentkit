@@ -6,7 +6,7 @@ The kit is deliberately small. The core package owns the turn loop, tool dispatc
 
 This repository is the Agent Kit 1.0 reference implementation. It includes the core packages, a frozen local ProtoScript/Ontology runtime, ASP.NET Core hosting helpers, deterministic scripted samples, and three domain-specific sample applications that demonstrate read-only administrative workflows, controlled side effects, and headless incident investigation.
 
-> Target framework note: this local build targets `net9.0` because the .NET 10 SDK is not installed in the build environment. The intended frozen release target is `net10.0`; see [`FREEZE.md`](FREEZE.md) for the recorded deviation.
+> Target framework: Agent Kit 1.0 targets `net10.0` and is validated with the SDK pinned in [`global.json`](global.json). See [`FREEZE.md`](FREEZE.md) for the frozen release line.
 
 ## Quick start
 

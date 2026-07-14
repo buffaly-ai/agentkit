@@ -1,0 +1,24 @@
+name: build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: '**/packages.lock.json'
+      - name: Restore locked
+        run: dotnet restore Buffaly.AgentKit.sln --locked-mode
+      - name: Build
+        run: dotnet build Buffaly.AgentKit.sln -c Release --no-restore
+      - name: Pack
+        run: dotnet pack Buffaly.AgentKit.sln -c Release --no-build --no-restore -o artifacts/packages
+      - name: Test and external package-consumer proof
+        run: dotnet test Buffaly.AgentKit.sln -c Release --no-build --no-restore

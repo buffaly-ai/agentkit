@@ -1,58 +1,58 @@
 {
-  "generatedUtc": "2026-07-13T14:27:32.0411150Z",
-  "sdk": "9.0.300",
-  "targetFramework": "net9.0",
-  "validation": "Release build and 28 Release tests passed after packaging test source/artifact boundary fix.",
+  "schemaVersion": 1,
+  "generatedAt": "2026-07-14T17:33:24.7158719Z",
+  "targetFramework": "net10.0",
+  "sdk": "10.0.301",
   "packages": [
     {
-      "name": "Buffaly.AgentKit.1.0.0.nupkg",
-      "bytes": 18390,
-      "sha256": "FAA11C283120E0A4D2EE0A6908950504CDB92FFBDE0746C43518247FE8642329"
+      "file": "Buffaly.AgentKit.1.0.0.nupkg",
+      "sha256": "2560c2ec64b4068ff14d60011fa07c4232c236738324fbb6e5bfe10ddd1e6f52",
+      "bytes": 26814
     },
     {
-      "name": "Buffaly.AgentKit.AspNetCore.1.0.0.nupkg",
-      "bytes": 17647,
-      "sha256": "CADA46197572C7066D5BEB56D14130E3D0BEE2A9B9CD9481E07AFD415ACD7E22"
+      "file": "Buffaly.AgentKit.AspNetCore.1.0.0.nupkg",
+      "sha256": "4a43c010fed390a6003c14bc2dd280b9f43f3646e848a9209ddd9f65581a8a75",
+      "bytes": 27222
     },
     {
-      "name": "Buffaly.AgentKit.ProtoScript.1.0.0.nupkg",
-      "bytes": 15583,
-      "sha256": "6883E8BD10556F0540E782832993C06765399B55A76E25F8DEA4E350D0FBD8F6"
+      "file": "Buffaly.AgentKit.ProtoScript.1.0.0.nupkg",
+      "sha256": "86b6e93d3a888586a39b1ab9370d0cc1d51503e5529d57d7553761e634f32e79",
+      "bytes": 21914
     },
     {
-      "name": "Buffaly.Foundation.Runtime.1.0.0.nupkg",
-      "bytes": 58353,
-      "sha256": "0AC916D09EE532B52B840221172B7486CD55CAFB40F31A22E1A815924DC20E08"
+      "file": "Buffaly.Foundation.Runtime.1.0.0.nupkg",
+      "sha256": "09acf40397e9288ffbe12443ec2a708ef4bbd3841509c7977c312e5aaef97be7",
+      "bytes": 118121
     },
     {
-      "name": "Ontology.Parsers.1.0.0.nupkg",
-      "bytes": 10546,
-      "sha256": "5C3DE45992E05632289E517CC7EF4FB0DCFF4D0576BD47156DCB9F1B87B13DC7"
+      "file": "Ontology.Parsers.1.0.0.nupkg",
+      "sha256": "7a3198a3be29e12ae1d676a6bc2bc0e73c8ef39dbbc5f56b440c6f7359b83a90",
+      "bytes": 14526
     },
     {
-      "name": "Ontology.Runtime.1.0.0.nupkg",
-      "bytes": 44707,
-      "sha256": "8E6403079AE9D0FB962AB4230720866977A36196F915DD9AA1BA7A8E3DE10DA9"
+      "file": "Ontology.Runtime.1.0.0.nupkg",
+      "sha256": "3ff9badb36dc21d2297f1cd92fc71463a12a0885a659cd3976826e237e793349",
+      "bytes": 104572
     },
     {
-      "name": "Ontology.Simulation.1.0.0.nupkg",
-      "bytes": 17110,
-      "sha256": "B1AF16A56222AC6E0C7F17FE55CBAE5F2933020A42C1008EF3AB9B434B102086"
+      "file": "Ontology.Simulation.1.0.0.nupkg",
+      "sha256": "0952ae1149b9a0f30e2f9639eea593f88188045cc3fd9b86c74736c117a9f062",
+      "bytes": 21143
     },
     {
-      "name": "ProtoScript.Interpretter.1.0.0.nupkg",
-      "bytes": 78170,
-      "sha256": "480D103EE562A981601C88643A3B81CB4243D1119F088F1FC34DFB872AA94DFF"
+      "file": "ProtoScript.Interpretter.1.0.0.nupkg",
+      "sha256": "a12d99c7cac813fd0ade3abe1c64341a078b89fb3e3d5530cc33905ca4ebc0aa",
+      "bytes": 82761
     },
     {
-      "name": "ProtoScript.Parsers.1.0.0.nupkg",
-      "bytes": 31872,
-      "sha256": "4333088CA77C7A8D879478AF68B3256CA4FA218F119A5DF79CEE0269D88F1F7B"
+      "file": "ProtoScript.Parsers.1.0.0.nupkg",
+      "sha256": "68c56132ea5449c7c7c30fc257417ab39e6a2b29060755cd5799b4dddbb55bab",
+      "bytes": 35933
     },
     {
-      "name": "ProtoScript.Runtime.1.0.0.nupkg",
-      "bytes": 20202,
-      "sha256": "C166E88602CB3C7B47B0B64DC75C653D2D274C5CF430B6FF42FE772B0030E2D3"
+      "file": "ProtoScript.Runtime.1.0.0.nupkg",
+      "sha256": "f43e09259051d8a89bc2276dd3fb789de0ca00af257ae772af3a39767a2c2776",
+      "bytes": 24190
     }
   ]
 }
