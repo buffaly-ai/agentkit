@@ -6,5 +6,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Buffaly.AgentKit\Buffaly.AgentKit.csproj" />
     <ProjectReference Include="..\..\src\Buffaly.AgentKit.ProtoScript\Buffaly.AgentKit.ProtoScript.csproj" />
+    <ProjectReference Include="..\Buffaly.AgentKit.SampleSupport\Buffaly.AgentKit.SampleSupport.csproj" />
   </ItemGroup>
 </Project>
+

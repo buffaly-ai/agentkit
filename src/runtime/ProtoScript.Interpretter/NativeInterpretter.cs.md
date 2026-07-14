@@ -1,5 +1,9 @@
 # NativeInterpretter.cs Change History
 
+## Integer Addition Evaluation (2026-07-14)
+- Evaluate an `AddOperator` inferred as `int` by converting both operands once and returning their integer sum.
+- Design Decision: dispatch from compiled type metadata, preserving existing string-concatenation behavior for string-valued additions.
+
 ## Return Type Coercion on External Invocation (2026-03-13)
 - Added declared return-type coercion in the external `RunMethod(...)` invocation path used by `RunMethodAsObject(...)`.
 - Design Decision: align external method execution with internal evaluation behavior so runtime return contracts (including `StringRef`) are enforced consistently.

@@ -31,8 +31,11 @@ public class ProtoScriptToolSetTests
     public async Task ToolSetInvokesAddNumbersThroughInterpreter()
     {
         await using ProtoScriptToolSet toolSet = await ProtoScriptToolSet.LoadAsync(ManifestPath);
-        object? result = await toolSet.Functions[0].InvokeAsync(new AIFunctionArguments(new Dictionary<string, object?> { ["a"] = 7, ["b"] = 8 }));
-        Assert.Equal(15, Convert.ToInt32(result));
+        foreach ((int a, int b, int expected) in new[] { (2, 3, 5), (17, 25, 42), (-4, 9, 5) })
+        {
+            object? result = await toolSet.Functions[0].InvokeAsync(new AIFunctionArguments(new Dictionary<string, object?> { ["a"] = a, ["b"] = b }));
+            Assert.Equal(expected, Convert.ToInt32(result));
+        }
     }
 
     [Fact]

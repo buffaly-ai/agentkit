@@ -137,6 +137,13 @@
           "ProtoScript.Runtime": "[1.0.0, )"
         }
       },
+      "buffaly.agentkit.samplesupport": {
+        "type": "Project",
+        "dependencies": {
+          "Buffaly.AgentKit": "[1.0.0, )",
+          "Buffaly.AgentKit.ProtoScript": "[1.0.0, )"
+        }
+      },
       "ontology.parsers": {
         "type": "Project",
         "dependencies": {

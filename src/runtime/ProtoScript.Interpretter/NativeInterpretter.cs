@@ -1062,6 +1062,17 @@ namespace ProtoScript.Interpretter
 			object left = Evaluate(exp.Left);
 			object right = Evaluate(exp.Right);
 
+			if (exp.InferredType?.Type == typeof(int))
+			{
+				object? integerLeftObject = ValueConversions.GetAs(left, typeof(int));
+				object? integerRightObject = ValueConversions.GetAs(right, typeof(int));
+				if (!(integerLeftObject is int integerLeft))
+					throw new RuntimeException("Left side of '+' is not convertible to int", exp.Info);
+				if (!(integerRightObject is int integerRight))
+					throw new RuntimeException("Right side of '+' is not convertible to int", exp.Info);
+				return integerLeft + integerRight;
+			}
+
 			object? strLeftObj = ValueConversions.GetAs(left, typeof(string));
 			object? strRightObj = ValueConversions.GetAs(right, typeof(string));
 

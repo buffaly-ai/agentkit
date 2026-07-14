@@ -1616,15 +1616,19 @@ import Ontology.Simulation Ontology.Simulation.BoolWrapper Boolean;
 				return null;
 			}
 
-			if (!IsSupportedStringConcatenationOperand(compiledLeft.InferredType))
+			bool isIntegerAddition =
+				SimpleInterpretter.IsAssignableFrom(compiledLeft.InferredType, new TypeInfo(typeof(int))) &&
+				SimpleInterpretter.IsAssignableFrom(compiledRight.InferredType, new TypeInfo(typeof(int)));
+
+			if (!isIntegerAddition && !IsSupportedStringConcatenationOperand(compiledLeft.InferredType))
 			{
-				this.AddDiagnostic(new Diagnostic("Only string concatenation supported"), null, op);
+				this.AddDiagnostic(new Diagnostic("Only integer addition and string concatenation are supported"), null, op);
 				return null;
 			}
 
-			if (!IsSupportedStringConcatenationOperand(compiledRight.InferredType))
+			if (!isIntegerAddition && !IsSupportedStringConcatenationOperand(compiledRight.InferredType))
 			{
-				this.AddDiagnostic(new Diagnostic("Only string concatenation supported"), null, op);
+				this.AddDiagnostic(new Diagnostic("Only integer addition and string concatenation are supported"), null, op);
 				return null;
 			}
 
@@ -1632,7 +1636,7 @@ import Ontology.Simulation Ontology.Simulation.BoolWrapper Boolean;
 			{
 				Left = compiledLeft,
 				Right = compiledRight,
-				InferredType = new TypeInfo(typeof(string)),
+				InferredType = new TypeInfo(isIntegerAddition ? typeof(int) : typeof(string)),
 			};
 		}
 		public Compiled.Expression CompileAndOperator(BinaryOperator op)

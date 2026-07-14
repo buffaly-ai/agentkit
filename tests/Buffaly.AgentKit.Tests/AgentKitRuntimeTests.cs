@@ -1,4 +1,6 @@
 using System.Collections.Concurrent;
+using Buffaly.AgentKit.ProtoScript;
+using Buffaly.AgentKit.SampleSupport;
 using Microsoft.Extensions.AI;
 using Xunit;
 
@@ -242,4 +244,32 @@ public class AgentKitRuntimeTests
         Assert.Contains(sink.Events, agentEvent => agentEvent.Kind == AgentEventKind.TurnLimitReached);
         Assert.DoesNotContain(sink.Events, agentEvent => agentEvent.Kind == AgentEventKind.ToolCallStarted);
     }
+
+    [Fact]
+    public async Task ModelCallsProtoScriptToolAndUsesObservedResultInFinalAnswer()
+    {
+        string root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", ".."));
+        string manifest = Path.Combine(root, "samples", "Tools", "agentkit.json");
+        await using ProtoScriptToolSet toolSet = await ProtoScriptToolSet.LoadAsync(manifest);
+        ProtoScriptAIFunction tool = Assert.Single(toolSet.Functions);
+        Assert.Equal("ProtoScript", tool.AdditionalProperties["buffaly.toolSource"]);
+        var provider = new StrictArithmeticChatClient(17, 25);
+        var events = new InMemoryAgentEventSink();
+        var conversation = AgentConversation.Create();
+
+        AgentTurnResult result = await new AgentKitRuntime(provider, toolSet.Tools, eventSink: events)
+            .RunTurnAsync(conversation, "Add 17 and 25.");
+
+        AgentFunctionCallContent call = Assert.Single(conversation.Messages.SelectMany(message => message.Contents).OfType<AgentFunctionCallContent>());
+        AgentFunctionResultContent functionResult = Assert.Single(conversation.Messages.SelectMany(message => message.Contents).OfType<AgentFunctionResultContent>());
+        Assert.Equal(17, call.Arguments["a"]!.GetValue<int>());
+        Assert.Equal(25, call.Arguments["b"]!.GetValue<int>());
+        Assert.Equal("proof-call-1", call.CallId);
+        Assert.Equal(call.CallId, functionResult.CallId);
+        Assert.Equal("42", functionResult.Result);
+        Assert.True(provider.ObservedMatchingResult);
+        Assert.Equal("The result is 42.", result.FinalAnswer);
+        Assert.Contains(events.Events, agentEvent => agentEvent.Kind == AgentEventKind.ToolCallCompleted && agentEvent.ToolName == tool.Name && agentEvent.ToolSource == "ProtoScript");
+    }
 }
+

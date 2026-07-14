@@ -12,7 +12,7 @@ public enum AgentMessageRole { System, User, Assistant, Tool }
 public enum AgentStopReason { FinalAnswer, MaxRounds, ToolCallLimit, Cancelled }
 public sealed record AgentTurnResult(AgentStopReason StopReason, string? FinalAnswer, int Rounds, IReadOnlyList<AgentMessage> Messages);
 public enum AgentEventKind { TurnStarted, RoundStarted, ModelResponseReceived, ToolCallStarted, ToolCallCompleted, ToolCallDenied, ToolCallFailed, TurnCompleted, TurnLimitReached }
-public sealed record AgentEvent(long Sequence, DateTimeOffset Timestamp, AgentEventKind Kind, string? Message = null, string? ToolName = null, string? ToolCallId = null) { public int SchemaVersion { get; init; } = 1; }
+public sealed record AgentEvent(long Sequence, DateTimeOffset Timestamp, AgentEventKind Kind, string? Message = null, string? ToolName = null, string? ToolCallId = null, string? ToolSource = null) { public int SchemaVersion { get; init; } = 1; }
 public interface IAgentEventSink { ValueTask EmitAsync(AgentEvent agentEvent, CancellationToken cancellationToken = default); }
 public sealed class NullAgentEventSink : IAgentEventSink { public static NullAgentEventSink Instance { get; } = new(); public ValueTask EmitAsync(AgentEvent agentEvent, CancellationToken cancellationToken = default) => ValueTask.CompletedTask; }
 public sealed class InMemoryAgentEventSink : IAgentEventSink { private readonly List<AgentEvent> _events = new(); public IReadOnlyList<AgentEvent> Events => _events; public ValueTask EmitAsync(AgentEvent agentEvent, CancellationToken cancellationToken = default) { _events.Add(agentEvent); return ValueTask.CompletedTask; } }
