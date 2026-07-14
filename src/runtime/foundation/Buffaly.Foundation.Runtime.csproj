@@ -8,5 +8,6 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="lib\BasicUtilities.dll" Pack="true" PackagePath="lib\$(TargetFramework)\BasicUtilities.dll" />
+    <None Include="lib\BasicUtilities.dll" Pack="true" PackagePath="runtimes\any\lib\$(TargetFramework)\BasicUtilities.dll" />
   </ItemGroup>
 </Project>

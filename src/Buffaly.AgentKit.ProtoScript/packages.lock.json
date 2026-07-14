@@ -8,6 +8,9 @@
           "Microsoft.Extensions.AI.Abstractions": "[9.5.0, )"
         }
       },
+      "buffaly.foundation.runtime": {
+        "type": "Project"
+      },
       "ontology.parsers": {
         "type": "Project",
         "dependencies": {
@@ -15,7 +18,10 @@
         }
       },
       "Ontology.Runtime": {
-        "type": "Project"
+        "type": "Project",
+        "dependencies": {
+          "Buffaly.Foundation.Runtime": "[1.0.0, )"
+        }
       },
       "ontology.simulation": {
         "type": "Project",

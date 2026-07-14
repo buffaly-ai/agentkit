@@ -1,6 +1,10 @@
 {
   "version": 2,
   "dependencies": {
-    "net9.0": {}
+    "net9.0": {
+      "buffaly.foundation.runtime": {
+        "type": "Project"
+      }
+    }
   }
 }

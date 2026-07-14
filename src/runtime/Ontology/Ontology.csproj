@@ -6,9 +6,11 @@
     <Description>Frozen Ontology runtime assembly for Buffaly Agent Kit 1.0.</Description>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\foundation\Buffaly.Foundation.Runtime.csproj" />
     <Reference Include="BasicUtilities">
       <HintPath>..\foundation\lib\BasicUtilities.dll</HintPath>
       <Private>true</Private>
     </Reference>
+    <None Include="..\foundation\lib\BasicUtilities.dll" Pack="true" PackagePath="lib\$(TargetFramework)\BasicUtilities.dll" />
   </ItemGroup>
 </Project>

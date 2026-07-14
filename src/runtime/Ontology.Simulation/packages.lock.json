@@ -2,6 +2,9 @@
   "version": 2,
   "dependencies": {
     "net9.0": {
+      "buffaly.foundation.runtime": {
+        "type": "Project"
+      },
       "ontology.parsers": {
         "type": "Project",
         "dependencies": {
@@ -9,7 +12,10 @@
         }
       },
       "Ontology.Runtime": {
-        "type": "Project"
+        "type": "Project",
+        "dependencies": {
+          "Buffaly.Foundation.Runtime": "[1.0.0, )"
+        }
       }
     }
   }
