@@ -1,21 +1,8 @@
 {
-  "generatedUtc": "2026-07-13T15:21:24.8622710Z",
+  "generatedUtc": "2026-07-14T02:54:40.4496336Z",
   "archive": "buffaly-agentkit-1.0.0-samples.zip",
-  "bytes": 45948,
-  "sha256": "F759A13BE4425D0089DF3AB233F295CCCB895E149DA2008DBC0F012F36EE8FEA",
+  "bytes": 50248,
+  "sha256": "3BE5779CFAE1FC7257A6058DB9E3C808C46BDBA5ED131436A2156893CF1CDF15",
   "fileCount": 73,
-  "exclusions": [
-    "any bin directory",
-    "any obj directory",
-    ".agentkit",
-    "output",
-    ".vs",
-    ".git"
-  ],
-  "samples": [
-    "Buffaly.AgentKit.SampleSupport",
-    "DevOps.IncidentInvestigation",
-    "Medical.ReferralReadiness",
-    "Commerce.ReturnResolution"
-  ]
+  "commit": "d2995feeb1e5470ebb1dea36f81ef33cb7fc4506"
 }
