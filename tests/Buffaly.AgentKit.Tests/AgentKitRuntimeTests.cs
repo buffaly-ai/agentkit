@@ -269,7 +269,19 @@ public class AgentKitRuntimeTests
         Assert.Equal("42", functionResult.Result);
         Assert.True(provider.ObservedMatchingResult);
         Assert.Equal("The result is 42.", result.FinalAnswer);
-        Assert.Contains(events.Events, agentEvent => agentEvent.Kind == AgentEventKind.ToolCallCompleted && agentEvent.ToolName == tool.Name && agentEvent.ToolSource == "ProtoScript");
+        Assert.Contains(events.Events, agentEvent =>
+            agentEvent.Kind == AgentEventKind.AssistantFunctionCallAdded &&
+            agentEvent.ToolName == tool.Name &&
+            agentEvent.ToolSource == "ProtoScript" &&
+            agentEvent.Data["projectFile"]!.GetValue<string>() == "Project.pts" &&
+            agentEvent.Data["method"]!.GetValue<string>() == "AddNumbers" &&
+            agentEvent.Data["arguments"]!["a"]!.GetValue<int>() == 17);
+        Assert.Contains(events.Events, agentEvent =>
+            agentEvent.Kind == AgentEventKind.ToolCallCompleted &&
+            agentEvent.ToolSource == "ProtoScript" &&
+            agentEvent.Data["result"]!.GetValue<string>() == "42" &&
+            !agentEvent.Data["resultTruncated"]!.GetValue<bool>() &&
+            agentEvent.Data["durationMilliseconds"] is not null);
     }
 }
 

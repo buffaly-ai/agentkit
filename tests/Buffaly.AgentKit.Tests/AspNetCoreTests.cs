@@ -38,6 +38,10 @@ public class AspNetCoreTests
         Assert.True(turn.IsSuccessStatusCode);
         HttpResponseMessage eventsResponse = await client.GetAsync($"/_agentkit/api/conversations/{id}/events");
         Assert.True(eventsResponse.IsSuccessStatusCode);
+        AgentEvent[] persistedEvents = (await eventsResponse.Content.ReadFromJsonAsync<AgentEvent[]>())!;
+        Assert.Contains(persistedEvents, item => item.Kind == AgentEventKind.UserMessageAdded && item.Data["text"]!.GetValue<string>() == "hello");
+        Assert.Contains(persistedEvents, item => item.Kind == AgentEventKind.AssistantMessageAdded && item.Data["text"]!.GetValue<string>() == "ok");
+        Assert.Contains(persistedEvents, item => item.Kind == AgentEventKind.TurnCompleted);
     }
 
     [Fact]
@@ -69,6 +73,35 @@ public class AspNetCoreTests
         AgentConversation? loaded = await new JsonlAgentConversationStore(dir).LoadAsync("abc");
         Assert.NotNull(loaded);
         Assert.Equal("abc", loaded.Id);
+    }
+
+    [Fact]
+    public async Task PersistedTurnTraceCanBeReadAfterStoreRecreation()
+    {
+        string directory = Path.Combine(Path.GetTempPath(), "agentkit-event-restart-" + Guid.NewGuid().ToString("n"));
+        var conversationStore = new JsonlAgentConversationStore(directory);
+        var eventStore = new FileAgentEventSink(directory);
+        var first = new ChatResponse(new ChatMessage(ChatRole.Assistant, [
+            new FunctionCallContent("restart-call-1", "echo", new Dictionary<string, object?> { ["value"] = "observed" })]));
+        var second = new ChatResponse(new ChatMessage(ChatRole.Assistant, "Observed: observed"));
+        var tool = new DelegateAIFunction("echo", "Echo value", (arguments, ct) => ValueTask.FromResult<object?>(arguments["value"]));
+        var conversation = AgentConversation.Create("restart-proof");
+
+        await new AgentKitRuntime(new ScriptedChatClient(first, second), [tool], eventSink: eventStore)
+            .RunTurnAsync(conversation, "Trace this turn");
+        await conversationStore.SaveAsync(conversation);
+
+        var recreatedEvents = new FileAgentEventSink(directory);
+        IReadOnlyList<AgentEvent> events = await recreatedEvents.ReadAsync(conversation.Id);
+
+        Assert.Contains(events, item => item.Kind == AgentEventKind.UserMessageAdded && item.Data["text"]!.GetValue<string>() == "Trace this turn");
+        Assert.Contains(events, item => item.Kind == AgentEventKind.AssistantFunctionCallAdded && item.Data["callId"]!.GetValue<string>() == "restart-call-1" && item.Data["arguments"]!["value"]!.GetValue<string>() == "observed");
+        Assert.Contains(events, item => item.Kind == AgentEventKind.ToolCallCompleted && item.Data["result"]!.GetValue<string>() == "observed");
+        Assert.Contains(events, item => item.Kind == AgentEventKind.AssistantMessageAdded && item.Data["text"]!.GetValue<string>() == "Observed: observed");
+        Assert.Equal(events.Select(item => item.Sequence).Order(), events.Select(item => item.Sequence));
+        Assert.True(File.Exists(Path.Combine(directory, conversation.Id, "conversation.json")));
+        Assert.True(File.Exists(Path.Combine(directory, conversation.Id, "events.jsonl")));
+        Assert.True(File.Exists(Path.Combine(directory, "conversations.jsonl")));
     }
 
     private static TestServer CreateServer(string prefix, bool inspector)

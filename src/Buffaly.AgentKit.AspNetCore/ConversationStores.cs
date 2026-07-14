@@ -23,14 +23,20 @@ public sealed class JsonlAgentConversationStore(string directory) : IAgentConver
 {
     private readonly string _directory = directory;
     private string FilePath => Path.Combine(_directory, "conversations.jsonl");
+    private string SnapshotPath(string id) => Path.Combine(_directory, id, "conversation.json");
     public async Task SaveAsync(AgentConversation conversation, CancellationToken cancellationToken = default)
     {
         Directory.CreateDirectory(_directory);
         string line = JsonSerializer.Serialize(new ConversationRecord(conversation.Id, conversation.ExportState())) + Environment.NewLine;
         await File.AppendAllTextAsync(FilePath, line, cancellationToken).ConfigureAwait(false);
+        string snapshot = SnapshotPath(conversation.Id);
+        Directory.CreateDirectory(Path.GetDirectoryName(snapshot)!);
+        await File.WriteAllTextAsync(snapshot, conversation.ExportState(), cancellationToken).ConfigureAwait(false);
     }
     public async Task<AgentConversation?> LoadAsync(string id, CancellationToken cancellationToken = default)
     {
+        string snapshot = SnapshotPath(id);
+        if (File.Exists(snapshot)) return AgentConversation.ImportState(await File.ReadAllTextAsync(snapshot, cancellationToken).ConfigureAwait(false));
         if (!File.Exists(FilePath)) return null;
         ConversationRecord? latest = null;
         foreach (string line in await File.ReadAllLinesAsync(FilePath, cancellationToken).ConfigureAwait(false))
@@ -55,3 +61,4 @@ public sealed class JsonlAgentConversationStore(string directory) : IAgentConver
     }
     private sealed record ConversationRecord(string Id, string State);
 }
+
