@@ -10,6 +10,26 @@ obj/
 *.suo
 *.rsuser
 
+# Local credentials and machine-specific settings
+.env
+.env.*
+!.env.example
+!.env.sample
+secrets.json
+**/secrets.json
+appsettings.Local.json
+appsettings.*.Local.json
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+id_rsa
+id_dsa
+id_ecdsa
+id_ed25519
+
 # Generated validation logs/reports
 artifacts/validation/
 
