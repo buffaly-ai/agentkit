@@ -10,5 +10,6 @@
     <ProjectReference Include="..\..\samples\DevOps.IncidentInvestigation\DevOps.IncidentInvestigation.csproj" />
     <ProjectReference Include="..\..\samples\Medical.ReferralReadiness\Medical.ReferralReadiness.csproj" />
     <ProjectReference Include="..\..\samples\Commerce.ReturnResolution\Commerce.ReturnResolution.csproj" />
+    <ProjectReference Include="..\..\samples\Medical.MedqaEvaluation\Medical.MedqaEvaluation.csproj" />
   </ItemGroup>
 </Project>
