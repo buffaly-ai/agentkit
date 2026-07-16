@@ -7,6 +7,9 @@
     <ProjectReference Include="..\..\src\Buffaly.AgentKit.ProtoScript\Buffaly.AgentKit.ProtoScript.csproj" />
     <ProjectReference Include="..\..\src\Buffaly.AgentKit.AspNetCore\Buffaly.AgentKit.AspNetCore.csproj" />
     <ProjectReference Include="..\..\samples\Buffaly.AgentKit.SampleSupport\Buffaly.AgentKit.SampleSupport.csproj" />
+    <ProjectReference Include="..\..\src\Buffaly.Provider.OpenAi\Buffaly.Provider.OpenAi.csproj" />
+    <ProjectReference Include="..\..\src\Buffaly.Provider.Xai\Buffaly.Provider.Xai.csproj" />
+    <ProjectReference Include="..\..\src\Buffaly.Provider.Ollama\Buffaly.Provider.Ollama.csproj" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio">

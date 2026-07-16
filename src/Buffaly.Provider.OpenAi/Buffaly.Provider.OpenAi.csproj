@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>Buffaly.Provider.OpenAi</PackageId>
+    <Description>OpenAI provider-native completion module for Buffaly.</Description>
+    <RootNamespace>Buffaly.Provider.OpenAi</RootNamespace>
+    <AssemblyName>Buffaly.Provider.OpenAi</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Buffaly.ProviderContracts\Buffaly.ProviderContracts.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>Buffaly.Provider.Ollama</PackageId>
+    <Description>Ollama provider-native completion module for Buffaly.</Description>
+    <RootNamespace>Buffaly.Provider.Ollama</RootNamespace>
+    <AssemblyName>Buffaly.Provider.Ollama</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Buffaly.ProviderContracts\Buffaly.ProviderContracts.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>Buffaly.Provider.Xai</PackageId>
+    <Description>xAI provider-native completion module for Buffaly.</Description>
+    <RootNamespace>Buffaly.Provider.Xai</RootNamespace>
+    <AssemblyName>Buffaly.Provider.Xai</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Buffaly.ProviderContracts\Buffaly.ProviderContracts.csproj" />
+  </ItemGroup>
+</Project>
