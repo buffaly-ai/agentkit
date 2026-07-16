@@ -50,6 +50,11 @@ public sealed class MedqaEvaluationTests
             Assert.Contains("\"Correct\": 1", File.ReadAllText(metrics0), StringComparison.Ordinal);
             Assert.Contains("\"Correct\": 1", File.ReadAllText(metrics1), StringComparison.Ordinal);
             Assert.True(File.Exists(metrics0 + ".manifest.json"));
+            string manifest = File.ReadAllText(metrics0 + ".manifest.json");
+            Assert.Contains("\"SystemPrompt\": \"\"", manifest, StringComparison.Ordinal);
+            Assert.Contains("\"Tools\": []", manifest, StringComparison.Ordinal);
+            Assert.Contains("\"CaseCount\": 2", manifest, StringComparison.Ordinal);
+            Assert.Contains("\"Sha256\":", manifest, StringComparison.Ordinal);
         }
         finally { Directory.Delete(folder, true); }
     }

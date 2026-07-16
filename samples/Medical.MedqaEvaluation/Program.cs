@@ -2,6 +2,7 @@ using Buffaly.AgentKit.Providers;
 using Buffaly.ProviderContracts;
 using System.Diagnostics;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
@@ -20,6 +21,7 @@ public static class Program
 
     public static async Task RunAsync(RunOptions options, CancellationToken cancellationToken = default)
     {
+        InputEvidence inputEvidence = ValidateInput(options.InputPath);
         var registry = new ProviderRegistry();
         if (options.Fixture) new FixtureProviderModule().Register(registry);
         else if (options.Provider == "openai") new Buffaly.Provider.OpenAi.OpenAiProviderModule().Register(registry);
@@ -30,7 +32,7 @@ public static class Program
         var catalogService = new ProviderCatalogService(registry, settings);
         ProviderCatalogContract catalog = await catalogService.GetProviderCatalogAsync(cancellationToken);
         var client = new ProviderCompletionClient(registry, catalogService);
-        WriteManifest(options, catalog);
+        WriteManifest(options, catalog, inputEvidence);
         HashSet<int> completed = ReadCompletedIds(options.OutputPath);
         Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(options.OutputPath))!);
         await using var output = new StreamWriter(new FileStream(options.OutputPath, FileMode.Append, FileAccess.Write, FileShare.Read));
@@ -41,15 +43,15 @@ public static class Program
             Validate(item);
             if (item.SourceCaseId % options.ShardCount != options.ShardIndex || completed.Contains(item.SourceCaseId)) continue;
             string prompt = RenderPrompt(item);
-            var request = new BuffalyCompletionRequest
-            {
-                Provider = options.Fixture ? "fixture" : options.Provider, ModelName = options.Fixture ? "fixture-medqa" : options.Model,
-                ReasoningLevel = options.Fixture ? string.Empty : options.ReasoningLevel,
-                Messages = new[] { new BuffalyChatMessage { Role = "user", Content = prompt } },
-                Tools = Array.Empty<BuffalyToolDefinition>(), Options = settings
-            };
             Stopwatch clock = Stopwatch.StartNew();
-            BuffalyCompletionResult response = await client.CompleteAsync(request, cancellationToken);
+            BuffalyCompletionResult response = await client.AskModelAsync(
+                prompt,
+                systemPrompt: string.Empty,
+                provider: options.Fixture ? "fixture" : options.Provider,
+                model: options.Fixture ? "fixture-medqa" : options.Model,
+                reasoningLevel: options.Fixture ? string.Empty : options.ReasoningLevel,
+                options: settings,
+                cancellationToken);
             clock.Stop();
             (string answer, string parseStatus) = ParseAnswer(response.Text, response.Success ? "ok" : "failed");
             var row = MedqaResult.From(item, options, response, answer, parseStatus, clock.ElapsedMilliseconds);
@@ -98,11 +100,28 @@ public static class Program
         Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(metricsPath))!);
         File.WriteAllText(metricsPath, JsonSerializer.Serialize(metrics, new JsonSerializerOptions { WriteIndented = true }));
     }
-    private static void WriteManifest(RunOptions options, ProviderCatalogContract catalog)
+    private static InputEvidence ValidateInput(string inputPath)
+    {
+        if (!File.Exists(inputPath)) throw new FileNotFoundException("MedQA input JSONL was not found.", inputPath);
+        var ids = new HashSet<int>(); int count = 0;
+        foreach (string line in File.ReadLines(inputPath))
+        {
+            if (string.IsNullOrWhiteSpace(line)) continue;
+            MedqaCase item = JsonSerializer.Deserialize<MedqaCase>(line, Json) ?? throw new InvalidOperationException("Invalid input row.");
+            Validate(item);
+            if (!ids.Add(item.SourceCaseId)) throw new InvalidOperationException("Duplicate source_case_id in input: " + item.SourceCaseId);
+            count++;
+        }
+        if (count == 0) throw new InvalidOperationException("MedQA input does not contain any cases.");
+        using FileStream stream = File.OpenRead(inputPath);
+        return new InputEvidence(count, Convert.ToHexString(SHA256.HashData(stream)));
+    }
+    private static void WriteManifest(RunOptions options, ProviderCatalogContract catalog, InputEvidence inputEvidence)
     {
         var manifest = new
         {
-            PromptVersion = "arm1-v1", options.Provider, options.Model, options.ReasoningLevel, options.ShardIndex, options.ShardCount,
+            PromptVersion = "arm1-v1", SystemPrompt = string.Empty, Tools = Array.Empty<string>(), options.Provider, options.Model, options.ReasoningLevel, options.ShardIndex, options.ShardCount,
+            Input = new { Path = Path.GetFullPath(options.InputPath), inputEvidence.CaseCount, inputEvidence.Sha256 },
             CatalogVersion = catalog.CatalogVersion, Catalog = catalog,
             Versions = new Dictionary<string, string>
             {
@@ -115,6 +134,8 @@ public static class Program
     }
     private static object Stats(IEnumerable<double> values) { double[] data = values.ToArray(); return new { Min = data.Length == 0 ? (double?)null : data.Min(), Max = data.Length == 0 ? (double?)null : data.Max(), Mean = data.Length == 0 ? (double?)null : data.Average() }; }
 }
+
+public sealed record InputEvidence(int CaseCount, string Sha256);
 
 public sealed record RunOptions(string InputPath, string OutputPath, string MetricsPath, string Provider, string Model, string ReasoningLevel, int ShardIndex, int ShardCount, bool Fixture)
 {
