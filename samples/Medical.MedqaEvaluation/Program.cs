@@ -1,6 +1,7 @@
 using Buffaly.AgentKit.Providers;
 using Buffaly.ProviderContracts;
 using System.Diagnostics;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
@@ -26,7 +27,10 @@ public static class Program
         else if (options.Provider == "ollama") new Buffaly.Provider.Ollama.OllamaProviderModule().Register(registry);
         else throw new InvalidOperationException("Unsupported provider: " + options.Provider);
         var settings = options.BuildSettings();
-        var client = new ProviderCompletionClient(registry, new ProviderCatalogService(registry, settings));
+        var catalogService = new ProviderCatalogService(registry, settings);
+        ProviderCatalogContract catalog = await catalogService.GetProviderCatalogAsync(cancellationToken);
+        var client = new ProviderCompletionClient(registry, catalogService);
+        WriteManifest(options, catalog);
         HashSet<int> completed = ReadCompletedIds(options.OutputPath);
         Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(options.OutputPath))!);
         await using var output = new StreamWriter(new FileStream(options.OutputPath, FileMode.Append, FileAccess.Write, FileShare.Read));
@@ -53,6 +57,15 @@ public static class Program
             await output.FlushAsync(cancellationToken);
         }
         WriteMetrics(options.OutputPath, options.MetricsPath);
+    }
+
+    public static void MergeShards(IEnumerable<string> shardPaths, string outputPath)
+    {
+        List<MedqaResult> rows = shardPaths.SelectMany(File.ReadLines).Where(line => !string.IsNullOrWhiteSpace(line)).Select(line => JsonSerializer.Deserialize<MedqaResult>(line, Json) ?? throw new InvalidOperationException("Invalid shard result row.")).OrderBy(row => row.SourceCaseId).ToList();
+        int duplicate = rows.GroupBy(row => row.SourceCaseId).Where(group => group.Count() > 1).Select(group => group.Key).FirstOrDefault(-1);
+        if (duplicate >= 0) throw new InvalidOperationException("Duplicate Source_Case_Id across shards: " + duplicate);
+        Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(outputPath))!);
+        File.WriteAllLines(outputPath, rows.Select(row => JsonSerializer.Serialize(row, Json)));
     }
 
     public static string RenderPrompt(MedqaCase item) =>
@@ -84,6 +97,21 @@ public static class Program
         var metrics = new { TotalCases = rows.Count, Correct = rows.Count(row => row.IsCorrect), ExactMatchAccuracy = rows.Count == 0 ? 0 : (double)rows.Count(row => row.IsCorrect) / rows.Count, InvalidOutputRate = rows.Count == 0 ? 0 : (double)rows.Count(row => row.ParseStatus is "invalid" or "error") / rows.Count, ParseStatusBreakdown = rows.GroupBy(row => row.ParseStatus).ToDictionary(group => group.Key, group => group.Count()), LatencyMs = Stats(rows.Select(row => (double)row.LatencyMs)), TokenUsage = new { InputTokens = Stats(rows.Where(row => row.InputTokens.HasValue).Select(row => (double)row.InputTokens!.Value)), OutputTokens = Stats(rows.Where(row => row.OutputTokens.HasValue).Select(row => (double)row.OutputTokens!.Value)), TotalTokens = Stats(rows.Where(row => row.TotalTokens.HasValue).Select(row => (double)row.TotalTokens!.Value)), ReasoningTokens = Stats(rows.Where(row => row.ReasoningTokens.HasValue).Select(row => (double)row.ReasoningTokens!.Value)) } };
         Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(metricsPath))!);
         File.WriteAllText(metricsPath, JsonSerializer.Serialize(metrics, new JsonSerializerOptions { WriteIndented = true }));
+    }
+    private static void WriteManifest(RunOptions options, ProviderCatalogContract catalog)
+    {
+        var manifest = new
+        {
+            PromptVersion = "arm1-v1", options.Provider, options.Model, options.ReasoningLevel, options.ShardIndex, options.ShardCount,
+            CatalogVersion = catalog.CatalogVersion, Catalog = catalog,
+            Versions = new Dictionary<string, string>
+            {
+                ["Buffaly.AgentKit"] = typeof(ProviderCompletionClient).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? string.Empty,
+                ["Buffaly.ProviderContracts"] = typeof(BuffalyCompletionRequest).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? string.Empty,
+                ["Provider"] = typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? string.Empty
+            }
+        };
+        File.WriteAllText(options.MetricsPath + ".manifest.json", JsonSerializer.Serialize(manifest, new JsonSerializerOptions { WriteIndented = true }));
     }
     private static object Stats(IEnumerable<double> values) { double[] data = values.ToArray(); return new { Min = data.Length == 0 ? (double?)null : data.Min(), Max = data.Length == 0 ? (double?)null : data.Max(), Mean = data.Length == 0 ? (double?)null : data.Average() }; }
 }

@@ -42,10 +42,14 @@ public sealed class MedqaEvaluationTests
             await Program.RunAsync(new RunOptions(input, output0, metrics0, "openai", "gpt-5.5", "medium", 0, 2, true));
             await Program.RunAsync(new RunOptions(input, output1, metrics1, "openai", "gpt-5.5", "medium", 1, 2, true));
             await Program.RunAsync(new RunOptions(input, output0, metrics0, "openai", "gpt-5.5", "medium", 0, 2, true));
+            string merged = Path.Combine(folder, "merged.jsonl");
+            Program.MergeShards(new[] { output0, output1 }, merged);
             Assert.Single(File.ReadLines(output0));
             Assert.Single(File.ReadLines(output1));
+            Assert.Equal(new[] { 1, 2 }, File.ReadLines(merged).Select(line => JsonDocument.Parse(line).RootElement.GetProperty("Source_Case_Id").GetInt32()));
             Assert.Contains("\"Correct\": 1", File.ReadAllText(metrics0), StringComparison.Ordinal);
             Assert.Contains("\"Correct\": 1", File.ReadAllText(metrics1), StringComparison.Ordinal);
+            Assert.True(File.Exists(metrics0 + ".manifest.json"));
         }
         finally { Directory.Delete(folder, true); }
     }
