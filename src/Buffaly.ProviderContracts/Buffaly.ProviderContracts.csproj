@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>Buffaly.ProviderContracts</PackageId>
+    <Description>Provider-neutral Buffaly model and media provider contracts.</Description>
+    <RootNamespace>Buffaly.ProviderContracts</RootNamespace>
+    <AssemblyName>Buffaly.ProviderContracts</AssemblyName>
+  </PropertyGroup>
+</Project>
