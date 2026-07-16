@@ -14,6 +14,32 @@ public sealed class ProviderCompletionClient
         _catalog = catalog ?? throw new ArgumentNullException(nameof(catalog));
     }
 
+    public Task<BuffalyCompletionResult> AskModelAsync(
+        string prompt,
+        string systemPrompt,
+        string provider,
+        string model,
+        string reasoningLevel,
+        IReadOnlyDictionary<string, string>? options = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(prompt);
+        ArgumentNullException.ThrowIfNull(systemPrompt);
+        var messages = new List<BuffalyChatMessage>();
+        if (systemPrompt.Length > 0)
+            messages.Add(new BuffalyChatMessage { Role = "system", Content = systemPrompt });
+        messages.Add(new BuffalyChatMessage { Role = "user", Content = prompt });
+        return CompleteAsync(new BuffalyCompletionRequest
+        {
+            Provider = provider,
+            ModelName = model,
+            ReasoningLevel = reasoningLevel,
+            Messages = messages,
+            Tools = Array.Empty<BuffalyToolDefinition>(),
+            Options = options ?? new Dictionary<string, string>()
+        }, cancellationToken);
+    }
+
     public async Task<BuffalyCompletionResult> CompleteAsync(BuffalyCompletionRequest request, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request);

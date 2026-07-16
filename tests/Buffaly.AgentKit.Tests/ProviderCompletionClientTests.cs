@@ -34,6 +34,24 @@ public sealed class ProviderCompletionClientTests
     }
 
     [Fact]
+    public async Task AskModelAsync_EmptySystemPromptCreatesOneUserOnlyRequest()
+    {
+        var executor = new CapturingExecutor();
+        var registry = new ProviderRegistry();
+        registry.AddCatalogSource(new TestCatalogSource());
+        registry.AddCompletionExecutor(executor);
+        var client = new ProviderCompletionClient(registry, new ProviderCatalogService(registry));
+
+        await client.AskModelAsync("Question only", string.Empty, "test", "medqa-model", "medium");
+
+        Assert.Equal(1, executor.CallCount);
+        BuffalyChatMessage message = Assert.Single(executor.Request!.Messages);
+        Assert.Equal("user", message.Role);
+        Assert.Equal("Question only", message.Content);
+        Assert.Empty(executor.Request.Tools);
+    }
+
+    [Fact]
     public async Task CompleteAsync_RejectsUnknownModelBeforeProviderExecution()
     {
         var executor = new CapturingExecutor();
